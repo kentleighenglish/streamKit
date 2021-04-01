@@ -1,0 +1,214 @@
+
+@mixin applyFontStandards() {
+	font-family: $font-family-default;
+	font-size: 1em;
+	letter-spacing: $letter-spacing-default;
+}
+
+@mixin realShadow($color: $primary, $inset: false) {
+	@if $inset {
+		box-shadow:
+		inset 4px 8px 6px -4px fade-out(darken($color, 20%), .9),
+		inset 4px 4px 12px 5px fade-out(desaturate($color, 60%), .8);
+	} @else {
+		box-shadow:
+		0 8px 6px -4px fade-out(darken($color, 20%), .9),
+
+		0 25px 20px -20px rgba(0,0,0,0.1),
+		0 10px 10px -3px fade-out(desaturate($color, 60%), .8);
+	}
+}
+
+@mixin unstyledLink() {
+	text-decoration: none;
+	color: initial;
+
+	&:hover {
+		color: $primary-dark;
+	}
+}
+
+@mixin lineClamp($count: 3) {
+	-webkit-line-clamp: $count;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+@mixin generate-flex($width, $extra: true) {
+	display: flex;
+	@if width == 0 {
+		flex: 1 1 initial;
+		max-width: initial;
+		width: initial;
+	} @else {
+		flex: 1 1 $width;
+		max-width: $width;
+		width: $width;
+	}
+
+	@if $extra {
+		justify-content: start;
+		align-items: start;
+		align-content: start;
+		box-sizing: border-box;
+	}
+}
+
+@mixin generate-flex-items($multiple, $extra: true) {
+	$total: (100 / $multiple);
+
+	// width:
+	@for $i from 1 through $total {
+		$width-name: $i*$multiple;
+		$width: percentage($i*$multiple/100);
+		&-#{$width-name} {
+			@include generate-flex($width, $extra);
+		}
+	}
+}
+
+@mixin prefixer($property, $value) {
+	#{$property}: $value;
+	-webkit-#{$property}: $value;
+	-moz-#{$property}: $value;
+	-ms-#{$property}: $value;
+	-o-#{$property}: $value;
+}
+
+// Breakpoints
+@mixin generate-breakpoints($lower: false, $upper: false) {
+	@for $i from 1 through length($mq-breakpoints) {
+		$bp: nth($mq-breakpoints, $i);
+		$name: nth($bp, 1);
+		$lower-name: false;
+		$upper-name: false;
+
+		@if $lower == false {
+			$upper-name: $name;
+		} @else if $upper == false {
+			$lower-name: $name;
+		} @else {
+			@if $i == 1 {
+				$upper-name: $name;
+			} @else if $i == length($mq-breakpoints) {
+				$lower-name: $name;
+			} @else {
+				$upper-bp: nth($mq-breakpoints, ($i + 1));
+
+				$lower-name: $name;
+				$upper-name: nth($upper-bp, 1);
+			}
+		}
+
+		&-#{$name} {
+			@include breakpoint($from: $lower-name, $until: $upper-name);
+		}
+	}
+}
+
+@mixin breakpoint($from: false, $until: false) {
+	&-show {
+		display: none;
+	}
+	&-hide {
+		display: inherit;
+	}
+	@include mq($from, $until) {
+		@include generate-flex-items(5, false);
+		@include generate-flex-items(33, false);
+
+		&-block {
+			width: 100%;
+		}
+
+		&-fill {
+			width: 100%;
+			height: 100%;
+		}
+
+		&-noshrink {
+			flex-shrink: 0;
+		}
+
+		&-margin {
+			margin: $gap/2;
+
+			&-v {
+				margin: $gap/2 0;
+			}
+			&-h {
+				margin: 0 $gap/2;
+			}
+		}
+
+		&-padding {
+			padding: $gap/2;
+
+			&-v {
+				padding: $gap/2 0;
+			}
+			&-h {
+				padding: 0 $gap/2;
+			}
+
+			&-lg {
+				padding: $gap;
+			}
+			&-sm {
+				padding: $gap/4;
+			}
+		}
+
+		&-show {
+			display: inherit;
+		}
+		&-hide {
+			display: none;
+		}
+		&-row {
+			flex-direction: row;
+			flex-wrap: nowrap;
+
+			&-wrap {
+				flex-direction: row;
+				flex-wrap: wrap;
+			}
+			&-nowrap {
+				flex-direction: row;
+				flex-wrap: nowrap;
+			}
+		}
+		&-column {
+			flex-direction: column;
+			flex-wrap: nowrap;
+
+			&-wrap {
+				flex-direction: column;
+				flex-wrap: wrap;
+			}
+			&-nowrap {
+				flex-direction: column;
+				flex-wrap: nowrap;
+			}
+		}
+		&-align {
+			@each $alignment-h, $name-h in $alignments-h {
+				&-#{$name-h} {
+					justify-content: $alignment-h;
+					align-items: $alignment-h;
+					align-content: $alignment-h;
+
+					@each $alignment-v, $name-v in $alignments-v {
+						&-#{$name-v} {
+							align-items: $alignment-v;
+							align-content: $alignment-v;
+							justify-content: $alignment-h;
+						}
+					}
+				}
+			}
+		}
+	}
+}

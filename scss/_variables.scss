@@ -1,0 +1,50 @@
+
+$prefix: "sk";
+
+// $primary: #723FAF;
+$primary: #BC4328;
+$accent: #D6C0B1;
+// $accent: #636363;
+
+$primary-dark: desaturate(darken($primary, 15%), 5%);
+
+$link: $primary;
+
+$grey-lightest: #E8F1F4;
+$grey-lighter: #DAE6EA;
+$grey-light: #B7C6CC;
+$grey: #748084;
+$grey-dark: #4E5A5E;
+$grey-darker: #2E373A;
+$grey-darkest: #1C2326;
+
+$gap: 16px;
+
+$font-size-default: 16px;
+$font-family-default: 'Nunito', sans-serif;
+$letter-spacing-default: .05em;
+
+$global-border-radius: 10px;
+
+$alignments-h:
+	(space-between, space-between),
+	(space-around, space-around),
+	(flex-start, start),
+	(flex-end, end),
+	(center, center),
+	(stretch, stretch);
+
+$alignments-v:
+	(space-between, space-between),
+	(space-around, space-around),
+	(flex-start, start),
+	(flex-end, end),
+	(center, center),
+	(stretch, stretch);
+
+$mq-breakpoints: (
+	xs: 360px,
+	sm: 760px,
+	md: 1200px,
+	lg: 1500px,
+);

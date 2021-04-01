@@ -36,6 +36,9 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+  styleResources: {
+    scss: ["./scss/_global.scss"],
+  },
 
   serverMiddleware: [
     { path: "/api", handler: "@/api/body-parse.js" },
