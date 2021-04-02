@@ -49,15 +49,15 @@
 	}
 
 	@if $extra {
-		justify-content: start;
-		align-items: start;
-		align-content: start;
+		justify-content: flex-start;
+		align-items: flex-start;
+		align-content: flex-start;
 		box-sizing: border-box;
 	}
 }
 
 @mixin generate-flex-items($multiple, $extra: true) {
-	$total: (100 / $multiple);
+	$total: floor(100 / $multiple);
 
 	// width:
 	@for $i from 1 through $total {

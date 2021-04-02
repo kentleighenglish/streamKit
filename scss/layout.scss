@@ -1,0 +1,102 @@
+.#{$prefix}-flex {
+	display: flex;
+	flex: 1 1 100%;
+	max-width: 100%;
+	width: 100%;
+	box-sizing: border-box;
+	// @include generate-flex-full(100%);
+
+	@include generate-flex-items(5);
+
+	@include generate-flex-items(33);
+
+	&-wrap {
+		flex-wrap: wrap;
+	}
+}
+
+.#{$prefix}-row {
+	flex-direction: row;
+
+	&-wrap {
+		flex-wrap: wrap;
+	}
+}
+
+.#{$prefix}-column {
+	flex-direction: column;
+
+	&-wrap {
+		flex-wrap: wrap;
+	}
+}
+
+.#{$prefix}-padding {
+	padding: $gap/2;
+
+	&-v {
+		padding: $gap/2 0;
+	}
+	&-h {
+		padding: 0 $gap/2;
+	}
+
+	&-lg {
+		padding: $gap;
+
+		&-v {
+			padding: $gap 0;
+		}
+		&-h {
+			padding: 0 $gap;
+		}
+	}
+	&-sm {
+		padding: $gap/4;
+
+		&-v {
+			padding: $gap/4 0;
+		}
+		&-h {
+			padding: 0 $gap/4;
+		}
+	}
+}
+
+.#{$prefix}-align {
+	@each $alignment-h, $name-h in $alignments-h {
+		&-#{$name-h} {
+			justify-content: $alignment-h;
+			align-items: $alignment-h;
+
+			@each $alignment-v, $name-v in $alignments-v {
+				&-#{$name-v} {
+					align-items: $alignment-v;
+					justify-content: $alignment-h;
+				}
+			}
+		}
+	}
+}
+
+.#{$prefix}-layout {
+	&-gt {
+		@include generate-breakpoints(true, false);
+	}
+	&-lt {
+		@include generate-breakpoints(false, true);
+	}
+
+	@include generate-breakpoints(true, true);
+}
+
+.#{$prefix}-center {
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.#{$prefix}-fill {
+	width: 100%;
+	height: 100%;
+}
