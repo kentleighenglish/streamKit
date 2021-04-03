@@ -24,7 +24,7 @@
         </td>
         <td class="trackbar__slideHead">
           <div class="trackbar__actions">
-            <span class="trackbar__action" ng-click="vm.onAddSlide()">
+            <span class="trackbar__action" @click="onAddSlide()">
               <span class="icon">add</span>
             </span>
           </div>
@@ -60,7 +60,7 @@
         <td class="trackbar__slide trackbar__slide--new"></td>
       </tr>
       <tr class="trackbar__layer">
-        <td class="trackbar__layerHead" ng-click="vm.onAddLayer()">
+        <td class="trackbar__layerHead" @click="onAddLayer()">
           <div class="trackbar__actions">
             <span class="trackbar__action icon">add</span>
           </div>
