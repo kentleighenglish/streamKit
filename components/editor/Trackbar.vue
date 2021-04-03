@@ -7,7 +7,7 @@
       <tr>
         <td class="trackbar__corner"></td>
         <td
-          v-for="slide in layers[0].slides"
+          v-for="(slide, slideIndex) in layers[0].slides"
           :key="`trackbarSlideLable__${slide.key}`"
           class="trackbar__slideHead"
         >

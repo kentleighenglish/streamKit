@@ -8,7 +8,7 @@
       </div>
       <!-- Source Panel -->
       <div class="toolbar__panel">
-        <sk-input ng-model="vm.cell.source" label="Source"></sk-input>
+        <!-- <sk-input ng-model="vm.cell.source" label="Source"></sk-input> -->
       </div>
       <div class="toolbar__panel">
         <!-- <control-panel ng-model="vm.cell.endTransition" options="vm.transitionTypes" label="End Transition"></control-panel> -->
