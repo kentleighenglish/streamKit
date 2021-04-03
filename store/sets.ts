@@ -1,10 +1,8 @@
 import Vue from "vue";
-import { cloneDeep, findIndex } from "lodash";
-import createLogger from 'vuex/dist/logger'
-import debugFunc from "debug";
+import { findIndex } from "lodash";
 
 export const MUTATION_TYPES = {
-  INIT_SET: '@SETS/INIT_SET',
+  INIT_SET: "@SETS/INIT_SET",
   UPDATE_SETS: "@SETS/UPDATE_SETS",
   CREATE_SET: "@SETS/CREATE_SET",
   LOAD_SET: "@SETS/LOAD_SET",
@@ -17,28 +15,47 @@ export const MUTATION_TYPES = {
   UPDATE_ACTIVE_CELL: "@SETS/UPDATE_ACTIVE_CELL",
   SAVE_SET: "@SETS/SAVE",
   SAVE_SET_COMPLETE: "@SETS/SAVE_COMPLETE",
-  UPDATE_RECENT_SAVED: "@SETS/UPDATE_RECENT_SAVED"
-}
+  UPDATE_RECENT_SAVED: "@SETS/UPDATE_RECENT_SAVED",
+};
 
-const saveTimeout = null;
+let saveTimeout = null;
+
+const updateCurrentSet = (state, set) => {
+  const index = state.sets.findIndex((s) => s.id === state.currentSet);
+
+  if (index !== -1) {
+    state.sets[index] = {
+      ...state.sets[index],
+      ...set,
+    };
+  }
+
+  return state;
+};
 
 export const state = () => ({
   currentSet: null,
-	currentCell: {
-		layer: null,
-		slide: null
-	},
-	loadedSet: {},
-	sets: [],
-	loaded: false,
-	saving: false,
+  currentCell: {
+    layer: null,
+    slide: null,
+  },
+  loadedSet: {},
+  sets: [],
+  loaded: false,
+  saving: false,
   _recentlySaved: false,
 });
 
+export const getters = {
+  loadedSet({ sets }) {
+    return sets.find((s) => s.id === state.currentSet) || {};
+  },
+};
+
 export const actions = {
-	openModal: ({ commit, state }, modal) => {
-		commit(MUTATION_TYPES.OPEN_MODAL, { modal });
-	},
+  openModal: ({ commit, state }, modal) => {
+    commit(MUTATION_TYPES.OPEN_MODAL, { modal });
+  },
   initSet: ({ commit }) => {
     commit(MUTATION_TYPES.INIT_SET);
   },
@@ -59,64 +76,63 @@ export const actions = {
     commit(MUTATION_TYPES.LOAD_SET, set);
   },
   addLayer: ({ commit, dispatch }) => {
-  	commit(MUTATION_TYPES.ADD_LAYER)
+    commit(MUTATION_TYPES.ADD_LAYER);
 
-  	dispatch("updateCurrentSet");
+    dispatch("updateCurrentSet");
   },
   deleteLayer: ({ commit, dispatch }, index) => {
-  	commit(MUTATION_TYPES.DELETE_LAYER, index);
+    commit(MUTATION_TYPES.DELETE_LAYER, index);
 
-  	dispatch("updateCurrentSet");
+    dispatch("updateCurrentSet");
   },
   addSlide: ({ commit, dispatch }) => {
-  	commit(MUTATION_TYPES.ADD_SLIDE);
+    commit(MUTATION_TYPES.ADD_SLIDE);
 
-  	dispatch("updateCurrentSet");
+    dispatch("updateCurrentSet");
   },
   deleteSlide: ({ commit, dispatch }, index) => {
-  	commit(MUTATION_TYPES.DELETE_SLIDE, index);
+    commit(MUTATION_TYPES.DELETE_SLIDE, index);
 
-  	dispatch("updateCurrentSet");
+    dispatch("updateCurrentSet");
   },
   setActiveCell: ({ commit }, { layer, slide }) => {
-  	commit(MUTATION_TYPES.SET_ACTIVE_CELL, { layer, slide });
+    commit(MUTATION_TYPES.SET_ACTIVE_CELL, { layer, slide });
   },
   resetActiveCell: ({ commit }) => {
-  	commit(MUTATION_TYPES.RESET_ACTIVE_CELL);
+    commit(MUTATION_TYPES.RESET_ACTIVE_CELL);
   },
   updateActiveCell: ({ commit, dispatch }, cell) => {
-  	commit(MUTATION_TYPES.UPDATE_ACTIVE_CELL, cell);
+    commit(MUTATION_TYPES.UPDATE_ACTIVE_CELL, cell);
 
-  	dispatch("updateCurrentSet");
+    dispatch("updateCurrentSet");
   },
   updateCurrentSet: ({ commit, state, rootState }) => {
-  	// Prevent update from occurring immediately after changes
-  	clearTimeout(saveTimeout);
+    // Prevent update from occurring immediately after changes
+    clearTimeout(saveTimeout);
 
-  	saveTimeout = setTimeout(() => {
-  		// Only save again if not saved recently
-  		if (!state._recentlySaved) {
-  			commit(MUTATION_TYPES.UPDATE_RECENT_SAVED, true);
-  			const { socket } = rootState;
+    saveTimeout = setTimeout(() => {
+      // Only save again if not saved recently
+      if (!state._recentlySaved) {
+        commit(MUTATION_TYPES.UPDATE_RECENT_SAVED, true);
+        const { socket } = rootState;
 
-  			commit(MUTATION_TYPES.SAVE_SET);
-  			socket.emit("UPDATE", state.loadedSet, () => {
-  				commit(MUTATION_TYPES.SAVE_SET_COMPLETE);
-  				setTimeout(() => {
-  					commit(MUTATION_TYPES.UPDATE_RECENT_SAVED, false);
-  				}, 3000)
-  			});
-  		}
-  	}, 1000);
-  }
-
+        commit(MUTATION_TYPES.SAVE_SET);
+        socket.emit("UPDATE", state.loadedSet, () => {
+          commit(MUTATION_TYPES.SAVE_SET_COMPLETE);
+          setTimeout(() => {
+            commit(MUTATION_TYPES.UPDATE_RECENT_SAVED, false);
+          }, 3000);
+        });
+      }
+    }, 1000);
+  },
 };
 
 export const mutations = {
-	[MUTATION_TYPES.OPEN_MODAL]: function(state, { modal }) {
-		Vue.set(state, "visibleModal", modal);
-	},
-  [MUTATION_TYPES.INIT_SET]: function(state) {
+  [MUTATION_TYPES.OPEN_MODAL](state, { modal }) {
+    Vue.set(state, "visibleModal", modal);
+  },
+  [MUTATION_TYPES.INIT_SET](state) {
     const currentSet = sessionStorage.getItem("currentSet");
     const currentCell = sessionStorage.getItem("currentCell");
 
@@ -127,48 +143,54 @@ export const mutations = {
       Vue.set(state, "currentCell", JSON.parse(currentCell));
     }
   },
-  [MUTATION_TYPES.LOAD_SET]: function(state, set) {
+  [MUTATION_TYPES.LOAD_SET](state, set) {
     Vue.set(state, "currentSet", set);
     sessionStorage.setItem("currentSet", set);
   },
-  [MUTATION_TYPES.UNLOAD_SET]: function(state) {
+  [MUTATION_TYPES.UNLOAD_SET](state) {
     Vue.set(state, "currentSet", null);
   },
-  [MUTATION_TYPES.UPDATE_SETS]: function(state, sets) {
+  [MUTATION_TYPES.UPDATE_SETS](state, sets) {
     Vue.set(state, "sets", sets);
     Vue.set(state, "loaded", true);
   },
-  [MUTATION_TYPES.ADD_LAYER]: function(state) {
-    Vue.set(state, updateCurrentSet(state, {
-      layers: state.loadedSet.layers + 1
-    }));
+  [MUTATION_TYPES.ADD_LAYER](state) {
+    Vue.set(
+      state,
+      updateCurrentSet(state, { layers: state.loadedSet.layers + 1 })
+    );
   },
-  [MUTATION_TYPES.DELETE_LAYER]: function(state, layer) {
+  [MUTATION_TYPES.DELETE_LAYER](state, layer) {
     const deletedLayer = layer;
     const { layers, cells } = state.loadedSet;
 
-    Vue.set(state, updateCurrentSet(state, {
-      layers: layers > 1 ? layers - 1 : 1,
-      cells: cells.reduce((arr, cell) => {
-        if (cell.layer === deletedLayer) {
-          return arr;
-        }
+    Vue.set(
+      state,
+      updateCurrentSet(state, {
+        layers: layers > 1 ? layers - 1 : 1,
+        cells: cells.reduce((arr, cell) => {
+          if (cell.layer === deletedLayer) {
+            return arr;
+          }
 
-        if (cell.layer > deletedLayer) {
-          cell.layer = cell.layer--;
-        }
+          if (cell.layer > deletedLayer) {
+            cell.layer = cell.layer--;
+          }
 
-        return [...arr, cell];
-      }, [])
-    }));
+          return [...arr, cell];
+        }, []),
+      })
+    );
   },
-  [MUTATION_TYPES.ADD_SLIDE]: function(state) {
-    Vue.set(state, updateCurrentSet(state, {
-      slides: state.loadedSet.slides + 1
-    }));
+  [MUTATION_TYPES.ADD_SLIDE](state) {
+    Vue.set(
+      state,
+      updateCurrentSet(state, {
+        slides: state.loadedSet.slides + 1,
+      })
+    );
   },
-  [MUTATION_TYPES.DELETE_SLIDE]: function(state, payload) {
-    const deletedSlide = action.payload;
+  [MUTATION_TYPES.DELETE_SLIDE](state, deletedSlide) {
     const { slides, cells } = state.loadedSet;
 
     state = updateCurrentSet(state, {
@@ -178,36 +200,40 @@ export const mutations = {
           return arr;
         }
 
-        if (cell.slide > deletedLayer) {
+        if (cell.slide > deletedSlide) {
           cell.slide = cell.slide--;
         }
 
         return [...arr, cell];
-      }, [])
+      }, []),
     });
   },
-  [MUTATION_TYPES.SET_ACTIVE_CELL]: function(state, payload) {
-    const { layer, slide } = action.payload;
-
+  [MUTATION_TYPES.SET_ACTIVE_CELL](state, { layer, slide }) {
     state.currentCell.layer = layer;
     state.currentCell.slide = slide;
 
     sessionStorage.setItem("currentCell", JSON.stringify(state.currentCell));
   },
-  [MUTATION_TYPES.RESET_ACTIVE_CELL]: function(state, payload) {
+  [MUTATION_TYPES.RESET_ACTIVE_CELL](state, payload) {
     // @todo clear the active cell if the layer or slide it was in is deleted;
   },
-  [MUTATION_TYPES.UPDATE_ACTIVE_CELL]: function(state, cell) {
+  [MUTATION_TYPES.UPDATE_ACTIVE_CELL](state, cell) {
     const { currentCell, loadedSet } = state;
 
     if (currentCell.layer !== null && currentCell.slide !== null) {
       const cells = loadedSet.cells;
-      const existingSlideIndex = findIndex(cells, { layer: currentCell.layer, slide: currentCell.slide });
+      const existingSlideIndex = findIndex(cells, {
+        layer: currentCell.layer,
+        slide: currentCell.slide,
+      });
 
-      const newCell = existingSlideIndex !== -1 ? {
-        ...cells[existingSlideIndex],
-        ...cell
-      } : cell;
+      const newCell =
+        existingSlideIndex !== -1
+          ? {
+              ...cells[existingSlideIndex],
+              ...cell,
+            }
+          : cell;
 
       if (existingSlideIndex !== -1) {
         cells[existingSlideIndex] = newCell;
@@ -215,32 +241,18 @@ export const mutations = {
         cells.push(newCell);
       }
 
-      Vue.set(state, updateCurrentSet(state, {
-        cells
-      }));
+      Vue.set(
+        state,
+        updateCurrentSet(state, {
+          cells,
+        })
+      );
     }
   },
-  [MUTATION_TYPES.SAVE_SET]: function(state) {
+  [MUTATION_TYPES.SAVE_SET](state) {
     Vue.set(state, "saving", true);
   },
-  [MUTATION_TYPES.SAVE_SET_COMPLETE]: function(state) {
+  [MUTATION_TYPES.SAVE_SET_COMPLETE](state) {
     Vue.set(state, "saving", false);
-  }
-}
-
-const getCurrentSet = state => {
-	return (state.sets.find(s => s.id === state.currentSet) || {});
-}
-
-const updateCurrentSet = (state, set) => {
-	const index = state.sets.findIndex(s => s.id === state.currentSet);
-
-	if (index !== -1) {
-		state.sets[index] = {
-			...state.sets[index],
-			...set
-		};
-	}
-
-	return state;
-}
+  },
+};
