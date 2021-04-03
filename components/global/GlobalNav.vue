@@ -1,10 +1,18 @@
 <template>
   <nav class="navbar">
     <div class="sk-flex">
-      <a to="/dashboard">Dashboard <span class="icon">view_quilt</span></a>
-      <a to="/editor">Slide Editor <span class="icon">view_carousel</span></a>
-      <a to="/sources">Sources <span class="icon">widgets</span></a>
-      <a to="/media">Media <span class="icon">perm_media</span></a>
+      <router-link to="/dashboard">
+        Dashboard <span class="icon">view_quilt</span>
+      </router-link>
+      <router-link to="/editor">
+        Slide Editor <span class="icon">view_carousel</span>
+      </router-link>
+      <router-link to="/sources">
+        Sources <span class="icon">widgets</span>
+      </router-link>
+      <router-link to="/media">
+        Media <span class="icon">perm_media</span>
+      </router-link>
     </div>
   </nav>
 </template>
