@@ -1,15 +1,34 @@
-export const state = () => ({
-  currentSet: null,
+import { Device, Socket } from "./socket";
+import { Set } from "./sets";
+
+export interface SetsState {
+  currentSet: string | null;
   currentCell: {
-    layer: null,
-    slide: null,
-  },
-  loadedSet: {},
-  sets: [],
-  loaded: false,
-  saving: false,
-  _recentlySaved: false,
-});
+    layer: number | null;
+    slide: number | null;
+  };
+  sets: Set[];
+  loaded: boolean;
+  saving: boolean;
+  _recentlySaved: boolean;
+}
+
+export interface RootState {
+  devices: Device[];
+  socket: Socket;
+  sets?: SetsState;
+}
+
+export interface Store {
+  commit: (type: string, payload?: any) => void;
+  dispatch: (type: string, payload?: any) => any;
+  state: any;
+  rootState: any;
+}
+
+// Mutation Types
+export const updateDevicesType = "@updateDevices";
+export const addSocketType = "@addSocket";
 
 export const initSetType = "@sets/initSet";
 export const updateSetsType = "@sets/updateSets";

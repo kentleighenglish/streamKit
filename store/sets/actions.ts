@@ -12,8 +12,10 @@ import {
   saveSetType,
   saveSetCompleteType,
   updateRecentlySavedType,
-} from "./constants";
-import { Set, Cell, Store } from "./interfaces";
+  Store,
+} from "@/types/store";
+import { Set, Cell } from "@/types/sets";
+
 import { loadedSet } from "./getters";
 
 let saveTimeout: ReturnType<typeof setTimeout>;
