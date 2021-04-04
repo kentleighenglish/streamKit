@@ -16,7 +16,7 @@ export interface SetsState {
 export interface RootState {
   devices: Device[];
   socket: Socket;
-  sets?: SetsState;
+  sets: SetsState;
 }
 
 export interface Store {

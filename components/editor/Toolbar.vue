@@ -17,18 +17,26 @@
   </div>
 </template>
 <script lang="ts">
+import Vue, { VueConstructor } from "vue";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { find, cloneDeep, merge } from "lodash";
+import { Cell } from "@/types/sets";
+import { RootState } from "@/types/store";
 
 // const transitionTypes = require("engine/transitions");
 
-export default {
+interface Toolbar {
+  loadedSet: Set<RootState>;
+}
+
+export default (Vue as VueConstructor<Vue & Toolbar>).extend({
   data: () => ({
     defaultCell: {
       startTransition: null,
       endTransition: null,
       source: null,
     },
+    cell: {},
     transitionTypes: {},
   }),
   computed: {
@@ -36,32 +44,30 @@ export default {
       loadedSet: "sets/loadedSet",
     }),
     ...mapState({
-      activeLayer({ sets: { currentCell } }) {
+      activeLayer({ sets: { currentCell } }: RootState): number | null {
         return currentCell.layer;
       },
-      activeSlide({ sets: { currentCell } }) {
+      activeSlide({ sets: { currentCell } }: RootState): number | null {
         return currentCell.slide;
       },
-      hasActiveCell({ sets: { currentCell } }) {
+      hasActiveCell({ sets: { currentCell } }: RootState): boolean {
         return !!(currentCell.layer !== null && currentCell.slide !== null);
       },
-      activeCell(state) {
-        const { cells = [] } = this.loadedSet;
-
-        if (this.activeLayer === null || this.activeSlide === null) {
-          return null;
-        }
-
-        const activeCell = find(cells, {
-          layer: this.activeLayer,
-          slide: this.activeSlide,
-        });
-
-        return (
-          activeCell || { layer: this.activeLayer, slide: this.activeSlide }
-        );
-      },
     }),
+    activeCell(): Cell | null {
+      const { cells = [] } = this.loadedSet;
+
+      if (this.activeLayer === null || this.activeSlide === null) {
+        return null;
+      }
+
+      const activeCell = find(cells, {
+        layer: this.activeLayer,
+        slide: this.activeSlide,
+      });
+
+      return activeCell || { layer: this.activeLayer, slide: this.activeSlide };
+    },
   },
   watch: {
     activeLayer() {
@@ -85,7 +91,7 @@ export default {
       updateActiveCell: "sets/updateActiveCell",
     }),
   },
-};
+});
 </script>
 <style lang="scss">
 .toolbar {

@@ -88,17 +88,33 @@
   </div>
 </template>
 <script lang="ts">
+import Vue from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { find, filter } from "lodash";
+import { Cell } from "@/types/sets";
 
-const processCells = (cells, layers, slides) => {
-  const layersArray = [];
+interface Slide {
+  key: string;
+  cell: Cell | null;
+}
+
+interface Layer {
+  key: string;
+  slides: Slide[];
+}
+
+const processCells = (
+  cells: Cell[],
+  layers: number,
+  slides: number
+): Layer[] => {
+  const layersArray: Layer[] = [];
 
   for (let l = 0; l < layers; l++) {
     if (!layersArray[l]) {
       layersArray[l] = {
         slides: [],
-        key: l,
+        key: `${l}`,
       };
     }
 
@@ -106,11 +122,11 @@ const processCells = (cells, layers, slides) => {
       const layer = l;
       const slide = s;
 
-      const matchingCell = find(cells, { layer, slide });
+      const matchingCell = find(cells, { layer, slide }) || null;
 
       layersArray[l].slides[s] = {
         key: `${l}.${s}`,
-        cell: matchingCell || null,
+        cell: matchingCell,
       };
     }
   }
@@ -118,12 +134,12 @@ const processCells = (cells, layers, slides) => {
   return layersArray;
 };
 
-export default {
+export default Vue.extend({
   computed: {
     ...mapGetters({
       loadedSet: "sets/loadedSet",
     }),
-    layers() {
+    layers(): Layer[] {
       const { cells = [], layers = 1, slides = 1 } = this.loadedSet;
 
       return processCells(cells, layers, slides);
@@ -137,7 +153,7 @@ export default {
       deleteSlide: "sets/deleteSlide",
       setActiveCell: "sets/setActiveCell",
     }),
-    onDeleteLayer(index) {
+    onDeleteLayer(index: number) {
       const cells = filter(this.layers[index].slides, (c) => !!c.cell);
 
       if (
@@ -154,7 +170,7 @@ export default {
     onAddLayer() {
       this.addLayer();
     },
-    onDeleteSlide(index) {
+    onDeleteSlide(index: number) {
       const cells = filter(this.layers[index].slides, (c) => !!c.cell);
 
       if (
@@ -171,11 +187,11 @@ export default {
     onAddSlide() {
       this.addSlide();
     },
-    onCellClick($event, layer, slide) {
+    onCellClick($event: MouseEvent, layer: number, slide: number) {
       this.setActiveCell({ layer, slide });
     },
   },
-};
+});
 </script>
 <style lang="scss">
 $trackbar-bg: desaturate(lighten($grey-darkest, 3%), 5%);
