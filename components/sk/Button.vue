@@ -9,9 +9,9 @@
       <slot></slot>
     </div>
     <div class="skButton__frame">
-      <div class="skButton__frameInner" ng-if="hoverIcon">
-        <span ng-if="!loading" class="icon">{{ hoverIcon }}</span>
-        <Loading ng-if="loading" />
+      <div v-if="hoverIcon" class="skButton__frameInner">
+        <span v-if="!loading" class="icon">{{ hoverIcon }}</span>
+        <SkLoading v-if="loading" />
       </div>
     </div>
   </button>
@@ -36,6 +36,12 @@ export default Vue.extend({
     hoverIcon: {
       type: String,
       default: null,
+    },
+  },
+  methods: {
+    onClick(e: MouseEvent) {
+      e.preventDefault();
+      e.stopPropagation();
     },
   },
 });

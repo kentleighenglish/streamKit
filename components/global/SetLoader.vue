@@ -26,7 +26,7 @@
       class="setCreator__form"
       @submit="onCreateSetSubmit()"
     >
-      <sk-input
+      <FormInput
         v-model="newSet.name"
         name="name"
         label="Set Name"
@@ -35,14 +35,14 @@
         required
       />
       <div class="sk-flex sk-align-end">
-        <Button
+        <SkButton
           type="submit"
           hover-icon="check"
-          loading="creating"
-          :disabled="creating || createForm.$invalid"
+          :loading="creating"
+          :disabled="creating"
         >
           Create Set
-        </Button>
+        </SkButton>
       </div>
     </form>
   </div>
