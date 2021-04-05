@@ -26,6 +26,9 @@
           <span>{{ label }}</span>
         </slot>
       </span>
+      <div class="input__frame">
+        <div class="input__frameBack"></div>
+      </div>
     </label>
     <label v-else-if="type === 'textarea'" :for="name">
       <span class="input__label">
@@ -43,6 +46,9 @@
         :rows="rows"
         @input="updateValue($event.target.value)"
       ></textarea>
+      <div class="input__frame">
+        <div class="input__frameBack"></div>
+      </div>
     </label>
     <label v-else-if="type === 'select'" :for="name">
       <span class="input__label">
@@ -64,6 +70,9 @@
           {{ optionLabel }}
         </option>
       </select>
+      <div class="input__frame">
+        <div class="input__frameBack"></div>
+      </div>
     </label>
     <label v-else :for="name">
       <span class="input__label">
@@ -96,6 +105,9 @@
           @click="passwordVisible = false"
         />
       </span>
+      <div class="input__frame">
+        <div class="input__frameBack"></div>
+      </div>
     </label>
   </ValidationProvider>
 </template>
@@ -250,7 +262,7 @@ export default Vue.extend({
   }
 }
 
-.input__input {
+.input__element {
   position: relative;
   width: 100%;
   background: none;
@@ -348,7 +360,7 @@ $range-contrast: 5%;
     font-size: 0.8em;
   }
 
-  .input__input {
+  .input__element {
     -webkit-appearance: none;
     margin: $range-thumb-height/2 0;
     width: $range-track-width;
