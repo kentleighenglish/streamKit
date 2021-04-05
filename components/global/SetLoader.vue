@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!vm.createMode" class="setLoader">
+  <div v-if="!createMode" class="setLoader">
     <h2 class="setLoader__title">Select a <b>stream</b> set</h2>
     <div class="setLoader__sets">
       <div
@@ -24,7 +24,7 @@
     <form
       name="createForm"
       class="setCreator__form"
-      @submit="onCreateSetSubmit(createForm)"
+      @submit="onCreateSetSubmit()"
     >
       <sk-input
         v-model="newSet.name"
@@ -50,7 +50,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapState, mapActions } from "vuex";
-const { cloneDeep } = require("lodash");
+import { cloneDeep } from "lodash";
+import { Set } from "@/types/sets";
+import { RootState } from "@/types/store";
 
 export default Vue.extend({
   data: () => ({
@@ -63,7 +65,7 @@ export default Vue.extend({
   }),
   computed: {
     ...mapState({
-      sets({ sets: { sets } }) {
+      sets({ sets: { sets } }: RootState): Set[] {
         return sets;
       },
     }),
@@ -79,7 +81,7 @@ export default Vue.extend({
     onCreateSet() {
       this.createMode = true;
     },
-    onCreateSetSubmit(form) {
+    onCreateSetSubmit() {
       this.creating = true;
       this.createSet(this.newSet).then(() => {
         this.creating = false;
@@ -87,7 +89,7 @@ export default Vue.extend({
 
       this.newSet = cloneDeep(this.initialSet);
     },
-    onLoadSet(set) {
+    onLoadSet(set: Set) {
       this.loadSet(set);
     },
   },

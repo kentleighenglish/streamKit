@@ -1,4 +1,15 @@
-export default {
+import Vue, { VueConstructor } from "vue";
+
+interface ClassModsMixin {
+  $options: {
+    classMod: {
+      baseClass: string;
+      modifiers: { [key: string]: (vm: any) => boolean };
+    };
+  };
+}
+
+export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({
   computed: {
     componentClass() {
       if (this.$options.classMod) {
@@ -29,4 +40,4 @@ export default {
       return "";
     },
   },
-};
+});
