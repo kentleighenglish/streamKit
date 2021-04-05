@@ -40,7 +40,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxtjs/style-resources"],
+  modules: ["@/server/socket", "@nuxtjs/style-resources"],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
@@ -48,9 +48,4 @@ export default {
     scss: ["./scss/_global.scss"],
   },
   css: ["./scss/bootstrap.scss"],
-
-  serverMiddleware: [
-    { path: "/api", handler: "@/api/body-parse.js" },
-    { path: "/api", handler: "@/api/index.js" },
-  ],
 };
