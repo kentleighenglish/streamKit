@@ -1,3 +1,5 @@
+const socketPath = "/socket";
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -28,7 +30,7 @@ export default {
   },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ["@/plugins/socket"],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -40,7 +42,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@/server/socket", "@nuxtjs/style-resources"],
+  modules: [["@/server/socket", { socketPath }], "@nuxtjs/style-resources"],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
@@ -48,4 +50,8 @@ export default {
     scss: ["./scss/_global.scss"],
   },
   css: ["./scss/bootstrap.scss"],
+
+  publicRuntimeConfig: {
+    socketPath,
+  },
 };

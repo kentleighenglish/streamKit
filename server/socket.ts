@@ -78,11 +78,13 @@ const updateSets = async (socket) => {
   socket.emit(setTypes.server.UPDATE_ALL, sets);
 };
 
-export default function () {
+export default function (options) {
   this.nuxt.hook("render:before", (renderer) => {
     const server = http.createServer(this.nuxt.renderer.app);
 
-    const io = socketIO(server);
+    const io = socketIO(server, {
+      path: options.socktPath,
+    });
 
     this.nuxt.server.listen = (port, host) =>
       new Promise((resolve) =>
