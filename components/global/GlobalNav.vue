@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="sk-flex">
-      <router-link to="/dashboard">
+      <router-link to="/">
         Dashboard <span class="icon">view_quilt</span>
       </router-link>
       <router-link to="/editor">

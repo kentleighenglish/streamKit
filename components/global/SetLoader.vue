@@ -98,6 +98,7 @@ export default Vue.extend({
 <style lang="scss">
 .setLoader,
 .setCreator {
+  width: 100%;
   max-width: 1200px;
   margin: 120px auto 0;
 

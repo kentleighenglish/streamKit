@@ -1,14 +1,10 @@
 <template>
   <div class="container">
-    <SetLoader v-if="!hasCurrentSet" />
+    <p>Dashboard</p>
   </div>
 </template>
 <script lang="ts">
-export default {
-  computed: {
-    hasCurrentSet() {
-      return false;
-    },
-  },
-};
+import Vue from "vue";
+
+export default Vue.extend({});
 </script>
