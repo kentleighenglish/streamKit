@@ -1,6 +1,7 @@
+import { Plugin } from "@nuxt/types";
 import io from "socket.io-client";
 
-export default ({ app }, inject) => {
+const plugin: Plugin = ({ app }, inject) => {
   const { socketPath } = app.$config;
 
   const { platform, userAgent } = window.navigator;
@@ -14,3 +15,5 @@ export default ({ app }, inject) => {
 
   inject("socket", () => socket);
 };
+
+export default plugin;
