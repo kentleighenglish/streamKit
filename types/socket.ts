@@ -5,6 +5,7 @@ export const socketEvents = {
   },
   server: {
     UPDATE_SETS: "@SERVER/UPDATE_SETS" as "@SERVER/UPDATE_SETS",
+    UPDATE_DEVICES: "@SERVER/UPDATE_DEVICES" as "@SERVER/UPDATE_DEVICES",
   },
 };
 
@@ -15,11 +16,10 @@ export interface SocketClientEvents {
 
 export interface SocketServerEvents {
   [socketEvents.server.UPDATE_SETS]: (sets: any) => void;
+  [socketEvents.server.UPDATE_DEVICES]: (devices: any) => void;
 }
 
 export interface Device {
   platform: string;
   userAgent: string;
 }
-
-export type Socket = any;

@@ -1,4 +1,5 @@
-import { Device, Socket } from "~/types/socket";
+import { Socket } from "socket.io-client";
+import { Device } from "~/types/socket";
 import { RootState, addSocketType, updateDevicesType } from "~/types/store";
 
 export interface Store {

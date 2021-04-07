@@ -3,8 +3,8 @@ import { Server, Socket, BroadcastOperator } from "socket.io";
 import { each } from "lodash";
 import debugFunc from "debug";
 import {
-  SocketServerEvents,
   SocketClientEvents,
+  SocketServerEvents,
   socketEvents,
 } from "@/types/socket";
 
@@ -34,9 +34,9 @@ interface SocketsData {
 
 const sockets: SocketsData = {};
 
-const bindEvents = (io, socket: Socket) => {
+const bindEvents = (io: Server, socket: Socket) => {
   each(events(io), (func, action) => {
-    socket.on(action, (data, callback) => {
+    socket.on(action, (data: any, callback: any) => {
       debug(`Event Trigger: ${action}`);
 
       return func({ socket, data, callback });
@@ -50,7 +50,7 @@ interface SocketEvent {
   data: any;
 }
 
-const events = (io: Socket) => ({
+const events = (io: Server) => ({
   [socketEvents.client.CREATE_SET]: async ({
     socket,
     callback,
@@ -90,7 +90,7 @@ const events = (io: Socket) => ({
 });
 
 const updateSets = async (
-  socket: Socket | BroadcastOperator<SocketServerEvents>
+  socket: Socket<SocketServerEvents> | BroadcastOperator<SocketServerEvents>
 ) => {
   const sets = await m.sets.fetchAll();
 
@@ -102,7 +102,7 @@ export default function (this: any, options: { socketPath: string }) {
   this.nuxt.hook("render:before", () => {
     const server = createServer(this.nuxt.renderer.app);
 
-    const io: Server = new Server<SocketServerEvents, SocketClientEvents>(
+    const io: Server = new Server<SocketClientEvents, SocketServerEvents>(
       server,
       {
         path: options.socketPath,
@@ -116,34 +116,40 @@ export default function (this: any, options: { socketPath: string }) {
 
     this.nuxt.hook("close", () => new Promise(server.close));
 
-    io.on("connection", (socket: Socket) => {
-      debug("Socket connection");
+    io.on(
+      "connection",
+      (socket: Socket<SocketServerEvents, SocketClientEvents>) => {
+        debug("Socket connection");
 
-      const {
-        query: { platform = "", userAgent = "" },
-      } = socket.handshake;
+        const {
+          query: { platform = "", userAgent = "" },
+        } = socket.handshake;
 
-      socket.join(user.id);
+        socket.join(user.id);
 
-      sockets[socket.id] = {
-        platform: <string>platform,
-        userAgent: <string>userAgent,
-      };
+        sockets[socket.id] = {
+          platform: <string>platform,
+          userAgent: <string>userAgent,
+        };
 
-      const devicesKeys = Object.keys(
-        io.sockets.adapter.rooms[user.id].sockets
-      );
+        // const devicesKeys = Object.keys(
+        //   io.sockets.adapter.rooms[user.id].sockets
+        // );
 
-      io.to(user.id).emit("%DEVICES/UPDATE", {
-        devices: devicesKeys.reduce(
-          (arr: SocketData[], socketId: string) => [...arr, sockets[socketId]],
-          []
-        ),
-      });
+        io.to(user.id).emit(socketEvents.server.UPDATE_DEVICES, {
+          devices: [].reduce(
+            (arr: SocketData[], socketId: string) => [
+              ...arr,
+              sockets[socketId],
+            ],
+            []
+          ),
+        });
 
-      updateSets(socket);
+        updateSets(socket);
 
-      bindEvents(io, socket);
-    });
+        bindEvents(io, socket);
+      }
+    );
   });
 }

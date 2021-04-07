@@ -1,6 +1,7 @@
 import Vue from "vue";
+import { Socket } from "socket.io-client";
 import { addSocketType, updateDevicesType, RootState } from "@/types/store";
-import { Socket, Device } from "@/types/socket";
+import { Device } from "@/types/socket";
 
 export default {
   [addSocketType](state: RootState, socket: Socket) {

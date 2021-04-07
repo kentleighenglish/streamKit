@@ -1,4 +1,5 @@
-import { Device, Socket } from "./socket";
+import { Socket } from "socket.io-client";
+import { Device } from "./socket";
 import { Set } from "./sets";
 
 export interface SetsState {
