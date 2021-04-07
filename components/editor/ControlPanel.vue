@@ -6,6 +6,7 @@
       type="select"
       label="Type"
       :options="types"
+      @input="updateValue($event.target.value, 'type')"
     />
     <div ng-if="vm.model.type">
       <div ng-repeat="(control, key) in controls">
@@ -15,16 +16,36 @@
           :label="control.label"
           :min="control.min"
           :max="control.max"
+          @input="updateValue($event.target.value, key, true)"
         />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
+import Vue, { VueConstructor } from "vue";
 import { cloneDeep, merge } from "lodash";
 
-export default Vue.extend({
+interface ControlPanelType {
+  key: string;
+  label: string;
+}
+
+interface Parameter {
+  [key: string]: any;
+}
+
+interface Model {
+  type: string | null;
+  parameters: Parameter;
+}
+
+interface ControlPanel {
+  defaultModel: Model;
+  model: Model;
+}
+
+export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
   props: {
     options: {
       type: Object,
@@ -33,6 +54,10 @@ export default Vue.extend({
     label: {
       type: String,
       default: null,
+    },
+    value: {
+      type: Object,
+      default: () => {},
     },
   },
   data: () => ({
@@ -44,19 +69,45 @@ export default Vue.extend({
   computed: {
     types() {
       return Object.keys(this.options).reduce(
-        (acc, key) => [...acc, { key, label: this.options[key].label || key }],
+        (acc: ControlPanelType[], key) => [
+          ...acc,
+          { key, label: this.options[key].label || key },
+        ],
         []
       );
     },
+    controls() {
+      if (this.model && this.model.type) {
+        return this.options[this.model.type].controls || {};
+      } else {
+        return {};
+      }
+    },
   },
-  controls() {
-    if (this.model && this.model.type) {
-      return cloneDeep(
-        merge(this.defaultModel, this.ngModelCtrl.$viewValue || {})
+  watch: {
+    model() {
+      this.$emit("input", this.model);
+    },
+  },
+  created() {
+    this.model = cloneDeep(merge(this.defaultModel, this.value));
+  },
+  mounted() {
+    this.model = cloneDeep(merge(this.defaultModel, this.value));
+  },
+  methods: {
+    updateValue(value: any, key: string, parameter: boolean = false) {
+      this.$emit(
+        "input",
+        cloneDeep(
+          merge(
+            this.defaultModel,
+            this.model,
+            parameter ? { parameters: { [key]: value } } : { [key]: value }
+          )
+        )
       );
-    } else {
-      return {};
-    }
+    },
   },
 });
 </script>
