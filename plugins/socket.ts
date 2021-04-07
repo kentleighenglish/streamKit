@@ -1,17 +1,21 @@
 import { Plugin } from "@nuxt/types";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
+import { SocketClientEvents, SocketServerEvents } from "@/types/socket";
 
 const plugin: Plugin = ({ app }, inject) => {
   const { socketPath } = app.$config;
 
   const { platform, userAgent } = window.navigator;
 
-  const socket = io(socketPath, {
-    query: {
-      platform,
-      userAgent,
-    },
-  });
+  const socket: Socket<SocketServerEvents, SocketClientEvents> = io(
+    socketPath,
+    {
+      query: {
+        platform,
+        userAgent,
+      },
+    }
+  );
 
   inject("socket", () => socket);
 };

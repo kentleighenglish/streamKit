@@ -1,37 +1,41 @@
-import http from "http";
-import socketIO from "socket.io";
+import { createServer } from "http";
+import { Server, Socket, BroadcastOperator } from "socket.io";
 import { each } from "lodash";
 import debugFunc from "debug";
+import {
+  SocketServerEvents,
+  SocketClientEvents,
+  socketEvents,
+} from "@/types/socket";
 
 const debug = debugFunc("app:socket");
 // const r = require("./rethink");
 
-const setTypes = {
-  client: {
-    CREATE: "CREATE",
-    UPDATE: "UPDATE",
-  },
-  server: {
-    UPDATE_ALL: "UPDATE_ALL",
-  },
-};
-
 const m = {
   sets: {
-    createSet: () => {},
-    updateSet: () => {},
+    createSet: (data: any) => {},
+    updateSet: (data: any) => {},
     fetchAll: () => [],
   },
 };
 
 const user = {
-  id: 1,
+  id: "1",
 };
 
-const sockets = {};
+interface SocketData {
+  platform: string;
+  userAgent: string;
+}
 
-const bindEvents = (socket) => {
-  each(events, (func, action) => {
+interface SocketsData {
+  [key: string]: SocketData;
+}
+
+const sockets: SocketsData = {};
+
+const bindEvents = (io, socket: Socket) => {
+  each(events(io), (func, action) => {
     socket.on(action, (data, callback) => {
       debug(`Event Trigger: ${action}`);
 
@@ -40,21 +44,35 @@ const bindEvents = (socket) => {
   });
 };
 
-const events = {
-  [setTypes.client.CREATE]: async ({ socket, callback, data = {} }) => {
+interface SocketEvent {
+  socket: Socket;
+  callback: (args?: any) => void;
+  data: any;
+}
+
+const events = (io: Socket) => ({
+  [socketEvents.client.CREATE_SET]: async ({
+    socket,
+    callback,
+    data = {},
+  }: SocketEvent) => {
     const { name = null } = data;
 
     const newSetId = await m.sets.createSet({
       name,
     });
 
-    await this.updateSets(this.io.to(user.id));
+    await updateSets(io.to(user.id));
 
     if (callback) {
       callback(newSetId);
     }
   },
-  [setTypes.client.UPDATE]: async ({ socket, callback, data = {} }) => {
+  [socketEvents.client.UPDATE_SET]: async ({
+    socket,
+    callback,
+    data = {},
+  }: SocketEvent) => {
     const { id, name, layers, slides, cells } = data;
 
     await m.sets.updateSet({
@@ -69,31 +87,36 @@ const events = {
       callback();
     }
   },
-};
+});
 
-const updateSets = async (socket) => {
+const updateSets = async (
+  socket: Socket | BroadcastOperator<SocketServerEvents>
+) => {
   const sets = await m.sets.fetchAll();
 
-  debug(`Event Emit: ${setTypes.server.UPDATE_ALL}`);
-  socket.emit(setTypes.server.UPDATE_ALL, sets);
+  debug(`Event Emit: ${socketEvents.server.UPDATE_SETS}`);
+  socket.emit(socketEvents.server.UPDATE_SETS, sets);
 };
 
-export default function (options) {
-  this.nuxt.hook("render:before", (renderer) => {
-    const server = http.createServer(this.nuxt.renderer.app);
+export default function (this: any, options: { socketPath: string }) {
+  this.nuxt.hook("render:before", () => {
+    const server = createServer(this.nuxt.renderer.app);
 
-    const io = socketIO(server, {
-      path: options.socktPath,
-    });
+    const io: Server = new Server<SocketServerEvents, SocketClientEvents>(
+      server,
+      {
+        path: options.socketPath,
+      }
+    );
 
-    this.nuxt.server.listen = (port, host) =>
-      new Promise((resolve) =>
+    this.nuxt.server.listen = (port: number, host: any) =>
+      new Promise((resolve: (arg?: any) => void) =>
         server.listen(port || 3000, host || "localhost", resolve)
       );
 
     this.nuxt.hook("close", () => new Promise(server.close));
 
-    io.on("connection", (socket) => {
+    io.on("connection", (socket: Socket) => {
       debug("Socket connection");
 
       const {
@@ -103,8 +126,8 @@ export default function (options) {
       socket.join(user.id);
 
       sockets[socket.id] = {
-        platform,
-        userAgent,
+        platform: <string>platform,
+        userAgent: <string>userAgent,
       };
 
       const devicesKeys = Object.keys(
@@ -113,14 +136,14 @@ export default function (options) {
 
       io.to(user.id).emit("%DEVICES/UPDATE", {
         devices: devicesKeys.reduce(
-          (arr, socketId) => [...arr, sockets[socketId]],
+          (arr: SocketData[], socketId: string) => [...arr, sockets[socketId]],
           []
         ),
       });
 
       updateSets(socket);
 
-      bindEvents(socket);
+      bindEvents(io, socket);
     });
   });
 }
