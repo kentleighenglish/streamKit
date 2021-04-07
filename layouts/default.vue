@@ -6,16 +6,29 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { mapState } from "vuex";
+import Vue, { VueConstructor } from "vue";
+import { mapState, mapActions } from "vuex";
 import { RootState } from "@/types/store";
+import { SocketClientInstance } from "@/types/socket";
 
-export default Vue.extend({
+interface DefaultLayout {
+  addSocket: (socket: () => SocketClientInstance) => void;
+}
+
+export default (Vue as VueConstructor<Vue & DefaultLayout>).extend({
   computed: {
     ...mapState({
       currentSetLoaded({ sets: { currentSet } }: RootState): boolean {
         return !!currentSet;
       },
+    }),
+  },
+  mounted() {
+    this.addSocket(this.$socket);
+  },
+  methods: {
+    ...mapActions({
+      addSocket: "addSocket",
     }),
   },
 });

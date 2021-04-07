@@ -1,6 +1,5 @@
-import { Socket } from "socket.io-client";
-import { Device } from "~/types/socket";
-import { RootState, addSocketType, updateDevicesType } from "~/types/store";
+import { Device, SocketClientInstance } from "@/types/socket";
+import { RootState, addSocketType, updateDevicesType } from "@/types/store";
 
 export interface Store {
   commit: (type: string, payload?: any) => void;
@@ -9,7 +8,10 @@ export interface Store {
   rootState: any;
 }
 
-export const addSocket = ({ commit }: Store, socket: Socket) => {
+export const addSocket = (
+  { commit }: Store,
+  socket: () => SocketClientInstance
+) => {
   commit(addSocketType, socket);
 };
 

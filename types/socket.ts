@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 export const socketEvents = {
   client: {
     CREATE_SET: "@CLIENT/CREATE_SET" as "@CLIENT/CREATE_SET",
@@ -22,4 +24,24 @@ export interface SocketServerEvents {
 export interface Device {
   platform: string;
   userAgent: string;
+}
+
+export type SocketClientInstance = Socket<
+  SocketServerEvents,
+  SocketClientEvents
+>;
+
+declare module "@nuxt/types" {
+  interface Context {
+    $socket: () => SocketClientInstance;
+  }
+  interface NuxtAppOptions {
+    $socket: () => SocketClientInstance;
+  }
+}
+
+declare module "vue/types/vue" {
+  interface Vue {
+    $socket: () => SocketClientInstance;
+  }
 }
