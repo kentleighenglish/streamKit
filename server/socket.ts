@@ -6,7 +6,7 @@ import {
   SocketClientEvents,
   SocketServerEvents,
   socketEvents,
-} from "@/types/socket";
+} from "../types/socket";
 
 const debug = debugFunc("app:socket");
 // const r = require("./rethink");
@@ -118,7 +118,7 @@ export default function (this: any, options: { socketPath: string }) {
 
     io.on(
       "connection",
-      (socket: Socket<SocketServerEvents, SocketClientEvents>) => {
+      async (socket: Socket<SocketServerEvents, SocketClientEvents>) => {
         debug("Socket connection");
 
         const {
@@ -132,12 +132,13 @@ export default function (this: any, options: { socketPath: string }) {
           userAgent: <string>userAgent,
         };
 
+        const roomSockets = await io.in(user.id).allSockets();
         // const devicesKeys = Object.keys(
         //   io.sockets.adapter.rooms[user.id].sockets
         // );
 
         io.to(user.id).emit(socketEvents.server.UPDATE_DEVICES, {
-          devices: [].reduce(
+          devices: Array(...roomSockets.values()).reduce(
             (arr: SocketData[], socketId: string) => [
               ...arr,
               sockets[socketId],
