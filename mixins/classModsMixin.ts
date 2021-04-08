@@ -1,12 +1,19 @@
 import Vue, { VueConstructor } from "vue";
 
-interface ClassModsMixin {
-  $options: {
-    classMod: {
-      baseClass: string;
-      modifiers: { [key: string]: (vm: any) => boolean };
-    };
-  };
+export interface ClassMod {
+  baseClass: string;
+  modifiers: { [key: string]: (vm: any) => boolean | string };
+}
+
+export interface ClassModsMixin {
+  classMod: ClassMod;
+}
+
+declare module "vue/types/options" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ComponentOptions<V extends Vue> {
+    classMod?: ClassMod;
+  }
 }
 
 export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({

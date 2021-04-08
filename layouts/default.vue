@@ -1,5 +1,6 @@
 <template>
   <div class="layout">
+    <SocketStatus />
     <SetLoader v-if="!currentSetLoaded" />
     <GlobalNav v-if="currentSetLoaded" />
     <Nuxt v-if="currentSetLoaded" />
