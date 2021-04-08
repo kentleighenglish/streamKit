@@ -13,6 +13,7 @@ export interface Cell {
 
 export interface Set {
   id: string;
+  name: string;
   cells: Cell[];
   layers: number;
   slides: number;
