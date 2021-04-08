@@ -1,5 +1,8 @@
 <template>
   <div :class="componentClass">
+    <div class="socketStatus__label">
+      {{ socket.connected ? "Connected" : "Disconnected" }}
+    </div>
     <div class="socketStatus__indicator" />
   </div>
 </template>
@@ -15,7 +18,6 @@ export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({
     baseClass: "socketStatus",
     modifiers: {
       connected: (vm: any) => vm.socket.connected,
-      connecting: (vm: any) => vm.socket.connecting,
       disconnected: (vm: any) => !vm.socket.connected,
     },
   },
@@ -34,6 +36,13 @@ export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({
   top: 0;
   right: 0;
   padding: $gap;
+  display: flex;
+  align-items: center;
+}
+
+.socketStatus__label {
+  margin-right: $gap;
+  font-size: 0.8em;
 }
 
 .socketStatus__indicator {
@@ -41,17 +50,23 @@ export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({
   height: 12px;
   background: $grey-darker;
   border-radius: 50%;
+}
 
-  .socketStatus--connected & {
+.socketStatus--connected {
+  .socketStatus__indicator {
     background: $success;
   }
-
-  .socketStatus--connecting & {
-    background: $warning;
+  .socketStatus__label {
+    color: $success;
   }
+}
 
-  .socketStatus--disconnected & {
+.socketStatus--disconnected {
+  .socketStatus__indicator {
     background: $danger;
+  }
+  .socketStatus__label {
+    color: $danger;
   }
 }
 </style>
