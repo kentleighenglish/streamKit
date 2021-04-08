@@ -2,9 +2,13 @@ import { Device, SocketClientInstance } from "@/types/socket";
 import {
   Store,
   SocketStatus,
+  Alert,
   addSocketType,
   updateDevicesType,
   updateSocketStatusType,
+  addAlertType,
+  removeAlertType,
+  clearAlertsType,
 } from "@/types/store";
 
 export const addSocket = (
@@ -47,4 +51,34 @@ export const bindEvents = ({ commit }: Store, io: SocketClientInstance) => {
       error: reason,
     });
   });
+};
+
+export const addAlert = (
+  { commit }: Store,
+  { group = "global", ...alert }: Alert
+) => {
+  commit(clearAlertsType, { group });
+
+  const timestamp = String(new Date().valueOf());
+  const id = btoa(`${timestamp}:${alert.message}`);
+
+  commit(addAlertType, { group, alert: { id, timestamp, ...alert } });
+};
+
+export const removeAlert = (
+  { commit }: Store,
+  { group, id }: { group: string; id: string }
+) => {
+  commit(removeAlertType, { group, id });
+};
+
+export const clearAlerts = (
+  { commit }: Store,
+  {
+    group,
+    clearMessages = true,
+    clearErrors = true,
+  }: { group: string; clearMessages?: boolean; clearErrors?: boolean }
+) => {
+  commit(clearAlertsType, { group, clearMessages, clearErrors });
 };

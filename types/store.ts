@@ -19,10 +19,21 @@ export interface SocketStatus {
   error?: string | null;
 }
 
+export interface Alert {
+  id?: string;
+  message: string;
+  group: string;
+  type?: string;
+  note?: boolean;
+  timeout?: number;
+  timestamp?: string | boolean;
+}
+
 export interface RootState {
   devices: Device[];
   socket: SocketStatus;
   sets: SetsState;
+  alerts: { [key: string]: Alert[] };
 }
 
 export type StoreCommit = (type: string, payload?: any) => void;
@@ -39,7 +50,11 @@ export interface Store {
 export const updateDevicesType = "@updateDevices";
 export const addSocketType = "@addSocket";
 export const updateSocketStatusType = "@updateSocketStatus";
+export const addAlertType = "@addAlert";
+export const removeAlertType = "@removeAlert";
+export const clearAlertsType = "@clearAlerts";
 
+// Sets Types
 export const initSetType = "@sets/initSet";
 export const updateSetsType = "@sets/updateSets";
 export const createSetType = "@sets/createSet";
