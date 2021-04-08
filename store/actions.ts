@@ -1,4 +1,5 @@
-import { Device, SocketClientInstance } from "@/types/socket";
+import { Set } from "@/types/sets";
+import { Device, SocketClientInstance, socketEvents } from "@/types/socket";
 import {
   Store,
   SocketStatus,
@@ -33,7 +34,10 @@ export const updateDevices = ({ commit }: Store, devices: Device[]) => {
   commit(updateDevicesType, devices);
 };
 
-export const bindEvents = ({ commit }: Store, io: SocketClientInstance) => {
+export const bindEvents = (
+  { commit, dispatch }: Store,
+  io: SocketClientInstance
+) => {
   io.on("connect", () => {
     commit(updateSocketStatusType, {
       connected: true,
@@ -50,6 +54,10 @@ export const bindEvents = ({ commit }: Store, io: SocketClientInstance) => {
       connected: false,
       error: reason,
     });
+  });
+
+  io.on(socketEvents.server.UPDATE_SETS, (sets: Set[]) => {
+    dispatch("sets/updateSets", sets, { root: true });
   });
 };
 
