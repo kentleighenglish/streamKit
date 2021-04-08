@@ -16,7 +16,6 @@ export interface SetsState {
 export interface SocketStatus {
   socket: () => SocketClientInstance;
   connected: boolean;
-  connecting: boolean;
   error?: string | null;
 }
 

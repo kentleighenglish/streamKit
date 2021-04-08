@@ -37,11 +37,13 @@ export const bindEvents = ({ commit }: Store, io: SocketClientInstance) => {
   });
   io.on("connect_error", (error: Error) => {
     commit(updateSocketStatusType, {
+      connected: false,
       error: error.message,
     });
   });
   io.on("disconnect", (reason: string) => {
     commit(updateSocketStatusType, {
+      connected: false,
       error: reason,
     });
   });
