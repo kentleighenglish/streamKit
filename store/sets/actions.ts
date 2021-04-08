@@ -14,6 +14,7 @@ import {
   updateRecentlySavedType,
   Store,
 } from "@/types/store";
+import { socketEvents } from "@/types/socket";
 import { Set, Cell } from "@/types/sets";
 
 import { loadedSet } from "./getters";
@@ -32,8 +33,8 @@ export const createSet = async ({ dispatch, rootState }: Store, set: Set) => {
   const { socket } = rootState.socket;
 
   await new Promise<void>((resolve) => {
-    socket.emit("CREATE", set, (newSetId: string) => {
-      dispatch("loadSet", newSetId);
+    socket().emit(socketEvents.client.CREATE_SET, set, (newSet: Set) => {
+      dispatch("loadSet", newSet);
       resolve();
     });
   });
@@ -91,11 +92,11 @@ export const updateCurrentSet = ({ commit, state, rootState }: Store) => {
     // Only save again if not saved recently
     if (!state._recentlySaved) {
       commit(updateRecentlySavedType, true);
-      const { socket } = rootState;
+      const { socket } = rootState.socket;
       const set = loadedSet(state);
 
       commit(saveSetType);
-      socket.emit("UPDATE", set, () => {
+      socket().emit(socketEvents.client.UPDATE_SET, set, () => {
         commit(saveSetCompleteType);
         setTimeout(() => {
           commit(updateRecentlySavedType, false);

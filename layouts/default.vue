@@ -25,6 +25,8 @@ export default (Vue as VueConstructor<Vue & DefaultLayout>).extend({
   },
   mounted() {
     this.addSocket(this.$socket);
+
+    this.$socket().connect();
   },
   methods: {
     ...mapActions({

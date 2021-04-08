@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+import { OptionalSet, Set } from "./sets";
 
 export const socketEvents = {
   client: {
@@ -11,19 +12,25 @@ export const socketEvents = {
   },
 };
 
-export interface SocketClientEvents {
-  [socketEvents.client.CREATE_SET]: (set: any) => void;
-  [socketEvents.client.UPDATE_SET]: (set: any) => void;
-}
-
-export interface SocketServerEvents {
-  [socketEvents.server.UPDATE_SETS]: (sets: any) => void;
-  [socketEvents.server.UPDATE_DEVICES]: (devices: any) => void;
-}
-
 export interface Device {
   platform: string;
   userAgent: string;
+}
+
+export interface SocketClientEvents {
+  [socketEvents.client.CREATE_SET]: (
+    set: OptionalSet,
+    callback?: (set: Set) => void
+  ) => void;
+  [socketEvents.client.UPDATE_SET]: (
+    set: OptionalSet,
+    callback?: (set: Set) => void
+  ) => void;
+}
+
+export interface SocketServerEvents {
+  [socketEvents.server.UPDATE_SETS]: (sets: Set[]) => void;
+  [socketEvents.server.UPDATE_DEVICES]: (devices: Device[]) => void;
 }
 
 export type SocketClientInstance = Socket<

@@ -1,11 +1,19 @@
 import Vue from "vue";
-import { Socket } from "socket.io-client";
-import { addSocketType, updateDevicesType, RootState } from "@/types/store";
-import { Device } from "@/types/socket";
+import {
+  addSocketType,
+  updateSocketStatusType,
+  updateDevicesType,
+  RootState,
+  SocketStatus,
+} from "@/types/store";
+import { Device, SocketClientInstance } from "@/types/socket";
 
 export default {
-  [addSocketType](state: RootState, socket: Socket) {
-    Vue.set(state, "socket", socket);
+  [addSocketType](state: RootState, socket: SocketClientInstance) {
+    Vue.set(state.socket, "socket", socket);
+  },
+  [updateSocketStatusType](state: RootState, socketStatus: SocketStatus) {
+    state.socket = { ...state.socket, ...socketStatus };
   },
   [updateDevicesType](state: RootState, devices: Device[]) {
     Vue.set(state, "devices", devices);

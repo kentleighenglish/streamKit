@@ -8,6 +8,7 @@ const plugin: Plugin = ({ app }, inject) => {
   const { platform, userAgent } = window.navigator;
 
   const socket: SocketClientInstance = io(window.location.host, {
+    autoConnect: false,
     path: socketPath,
     query: {
       platform,

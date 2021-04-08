@@ -1,5 +1,4 @@
-import { Socket } from "socket.io-client";
-import { Device } from "./socket";
+import { Device, SocketClientInstance } from "./socket";
 import { Set } from "./sets";
 
 export interface SetsState {
@@ -14,22 +13,33 @@ export interface SetsState {
   _recentlySaved: boolean;
 }
 
+export interface SocketStatus {
+  socket: () => SocketClientInstance;
+  connected: boolean;
+  connecting: boolean;
+  error?: string | null;
+}
+
 export interface RootState {
   devices: Device[];
-  socket: Socket;
+  socket: SocketStatus;
   sets: SetsState;
 }
 
+export type StoreCommit = (type: string, payload?: any) => void;
+export type StoreDispatch = (type: string, payload?: any, options?: any) => any;
+
 export interface Store {
-  commit: (type: string, payload?: any) => void;
-  dispatch: (type: string, payload?: any) => any;
+  commit: StoreCommit;
+  dispatch: StoreDispatch;
   state: any;
-  rootState: any;
+  rootState: RootState;
 }
 
 // Mutation Types
 export const updateDevicesType = "@updateDevices";
 export const addSocketType = "@addSocket";
+export const updateSocketStatusType = "@updateSocketStatus";
 
 export const initSetType = "@sets/initSet";
 export const updateSetsType = "@sets/updateSets";

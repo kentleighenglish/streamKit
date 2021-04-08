@@ -1,20 +1,48 @@
 import { Device, SocketClientInstance } from "@/types/socket";
-import { RootState, addSocketType, updateDevicesType } from "@/types/store";
-
-export interface Store {
-  commit: (type: string, payload?: any) => void;
-  dispatch: (type: string, payload?: any) => any;
-  state: RootState;
-  rootState: any;
-}
+import {
+  Store,
+  SocketStatus,
+  addSocketType,
+  updateDevicesType,
+  updateSocketStatusType,
+} from "@/types/store";
 
 export const addSocket = (
-  { commit }: Store,
+  { commit, dispatch }: Store,
   socket: () => SocketClientInstance
 ) => {
   commit(addSocketType, socket);
+
+  const io: SocketClientInstance = socket();
+
+  dispatch("bindEvents", io, { root: true });
+};
+
+export const updateSocketStatus = (
+  { commit }: Store,
+  socketStatus: SocketStatus
+) => {
+  commit(updateSocketStatusType, socketStatus);
 };
 
 export const updateDevices = ({ commit }: Store, devices: Device[]) => {
   commit(updateDevicesType, devices);
+};
+
+export const bindEvents = ({ commit }: Store, io: SocketClientInstance) => {
+  io.on("connect", () => {
+    commit(updateSocketStatusType, {
+      connected: true,
+    });
+  });
+  io.on("connect_error", (error: Error) => {
+    commit(updateSocketStatusType, {
+      error: error.message,
+    });
+  });
+  io.on("disconnect", (reason: string) => {
+    commit(updateSocketStatusType, {
+      error: reason,
+    });
+  });
 };
