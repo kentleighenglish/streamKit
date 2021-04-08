@@ -40,8 +40,7 @@ export default Vue.extend({
   },
   methods: {
     onClick(e: MouseEvent) {
-      e.preventDefault();
-      e.stopPropagation();
+      this.$emit("click", e);
     },
   },
 });
