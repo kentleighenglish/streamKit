@@ -53,7 +53,7 @@ export const fetchAll = async (set: OptionalSet): Promise<Set[]> => {
     );
 
     if (response) {
-      return response;
+      return <Set[]>response;
     }
 
     return [];
