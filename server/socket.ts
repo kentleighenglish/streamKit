@@ -1,4 +1,4 @@
-import { createServer } from "http";
+import http from "http";
 import { Server, Socket, BroadcastOperator } from "socket.io";
 import { each } from "lodash";
 import debugFunc from "debug";
@@ -100,7 +100,7 @@ const updateSets = async (
 
 export default function (this: any, options: { socketPath: string }) {
   this.nuxt.hook("render:before", () => {
-    const server = createServer(this.nuxt.renderer.app);
+    const server = http.createServer(this.nuxt.renderer.app);
 
     const io: Server = new Server<SocketClientEvents, SocketServerEvents>(
       server,
@@ -114,7 +114,13 @@ export default function (this: any, options: { socketPath: string }) {
         server.listen(port || 3000, host || "localhost", resolve)
       );
 
-    this.nuxt.hook("close", () => new Promise(server.close));
+    this.nuxt.hook(
+      "close",
+      () =>
+        new Promise((resolve) => {
+          server.close(resolve);
+        })
+    );
 
     io.on(
       "connection",
