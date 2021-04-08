@@ -24,6 +24,7 @@
     <Form
       name="createForm"
       class="setCreator__form"
+      error-group="createSetForm"
       :submit="onCreateSetSubmit"
     >
       <FormInput
