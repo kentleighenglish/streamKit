@@ -1,5 +1,4 @@
 import { Set, OptionalSet } from "@/types/sets";
-import { Db } from "mongodb";
 import { run } from "./_utils";
 
 const COLLECTION = "sets";
@@ -46,7 +45,7 @@ export const updateSet = async (set: OptionalSet): Promise<Set | null> => {
   }
 };
 
-export const fetchAll = async (set: OptionalSet): Promise<Set[]> => {
+export const fetchAll = async (): Promise<Set[]> => {
   try {
     const response = await run((db) =>
       db.collection(COLLECTION).find({}).toArray()

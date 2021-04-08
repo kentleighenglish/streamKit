@@ -7,9 +7,9 @@ import {
   SocketServerEvents,
   socketEvents,
 } from "../types/socket";
+import * as m from "./mongo";
 
 const debug = debugFunc("app:socket");
-const m = require("./mongo");
 
 const user = {
   id: "1",
