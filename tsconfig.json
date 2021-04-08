@@ -27,7 +27,8 @@
       "@nuxt/types",
       "@types/node",
       "@types/socket.io",
-      "@types/lodash"
+      "@types/lodash",
+      "@types/mongodb",
     ]
   },
   "exclude": [
