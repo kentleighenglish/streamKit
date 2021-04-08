@@ -21,10 +21,10 @@
   </div>
   <div v-else class="setCreator">
     <h2 class="setCreator__title">Create a <b>stream</b> set</h2>
-    <form
+    <Form
       name="createForm"
       class="setCreator__form"
-      @submit="onCreateSetSubmit()"
+      :submit="onCreateSetSubmit"
     >
       <FormInput
         v-model="newSet.name"
@@ -44,7 +44,7 @@
           Create Set
         </SkButton>
       </div>
-    </form>
+    </Form>
   </div>
 </template>
 <script lang="ts">
