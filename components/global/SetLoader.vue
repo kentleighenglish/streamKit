@@ -21,13 +21,13 @@
   </div>
   <div v-else class="setCreator">
     <h2 class="setCreator__title">Create a <b>stream</b> set</h2>
-    <Form
+    <SkForm
       name="createForm"
       class="setCreator__form"
       error-group="createSetForm"
       :submit="onCreateSetSubmit"
     >
-      <FormInput
+      <SkInput
         v-model="newSet.name"
         name="name"
         label="Set Name"
@@ -45,7 +45,7 @@
           Create Set
         </SkButton>
       </div>
-    </Form>
+    </SkForm>
   </div>
 </template>
 <script lang="ts">

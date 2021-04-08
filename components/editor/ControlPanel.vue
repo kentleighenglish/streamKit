@@ -1,7 +1,7 @@
 <template>
   <div class="controlPanel">
     <h3>{{ label }}</h3>
-    <FormInput
+    <SkInput
       v-model="model.type"
       type="select"
       label="Type"
@@ -10,7 +10,7 @@
     />
     <div ng-if="vm.model.type">
       <div ng-repeat="(control, key) in controls">
-        <FormInput
+        <SkInput
           v-model="model.parameters[key]"
           :type="control.type || 'text'"
           :label="control.label"
