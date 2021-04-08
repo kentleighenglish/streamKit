@@ -9,15 +9,7 @@ import {
 } from "../types/socket";
 
 const debug = debugFunc("app:socket");
-// const r = require("./rethink");
-
-const m = {
-  sets: {
-    createSet: (data: any) => {},
-    updateSet: (data: any) => {},
-    fetchAll: () => [],
-  },
-};
+const m = require("./mongo");
 
 const user = {
   id: "1",

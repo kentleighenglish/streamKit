@@ -1,4 +1,4 @@
-export type MongoResponse = Object | Array<any>;
+export type MongoResponse = any;
 
 export interface CollectionConfig {
   secondaryIndices?: Array<string>;

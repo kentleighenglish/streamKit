@@ -20,7 +20,7 @@ export const createSet = async (set: OptionalSet): Promise<Set | null> => {
     );
 
     if (response && response.id) {
-      return response;
+      return <Set>response;
     }
 
     return null;
@@ -37,7 +37,7 @@ export const updateSet = async (set: OptionalSet): Promise<Set | null> => {
 
     if (response) {
       console.log(response);
-      return response;
+      return <Set>response;
     }
 
     return null;
@@ -48,7 +48,9 @@ export const updateSet = async (set: OptionalSet): Promise<Set | null> => {
 
 export const fetchAll = async (set: OptionalSet): Promise<Set[]> => {
   try {
-    const response = await run((db) => db.collection(COLLECTION).fetch({}));
+    const response = await run((db) =>
+      db.collection(COLLECTION).find({}).toArray()
+    );
 
     if (response) {
       return response;
