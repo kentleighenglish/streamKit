@@ -13,6 +13,8 @@ body {
 	height: 100%;
 
 	@include applyFontStandards();
+
+  @include texturedBg($grey-darkest, "asanoha");
 }
 
 * {

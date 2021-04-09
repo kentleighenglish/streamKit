@@ -212,3 +212,8 @@
 		}
 	}
 }
+
+@mixin texturedBg($colour, $pattern){
+	background: url("@/assets/pat/#{$pattern}.png"), $colour;
+	background-blend-mode: multiply;
+}
