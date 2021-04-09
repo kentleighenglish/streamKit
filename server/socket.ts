@@ -65,10 +65,10 @@ const events = (io: Server) => ({
     callback,
     data = {},
   }: SocketEvent) => {
-    const { id, name, layers, slides, cells } = data;
+    const { _id, name, layers, slides, cells } = data;
 
     await m.sets.updateSet({
-      id,
+      _id,
       name,
       layers,
       slides,

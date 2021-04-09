@@ -21,7 +21,7 @@ import {
 import { loadedSet } from "./getters";
 
 const updateCurrentSet = (state: SetsState, set: OptionalSet): SetsState => {
-  const index = state.sets.findIndex((s: Set) => s.id === state.currentSet);
+  const index = state.sets.findIndex((s: Set) => s._id === state.currentSet);
 
   if (index !== -1) {
     state.sets[index] = {
