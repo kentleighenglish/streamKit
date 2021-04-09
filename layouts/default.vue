@@ -14,6 +14,7 @@ import { SocketClientInstance } from "@/types/socket";
 
 interface DefaultLayout {
   addSocket: (socket: () => SocketClientInstance) => void;
+  initSet: () => void;
 }
 
 export default (Vue as VueConstructor<Vue & DefaultLayout>).extend({
@@ -28,10 +29,13 @@ export default (Vue as VueConstructor<Vue & DefaultLayout>).extend({
     this.addSocket(this.$socket);
 
     this.$socket().connect();
+
+    this.initSet();
   },
   methods: {
     ...mapActions({
       addSocket: "addSocket",
+      initSet: "sets/initSet",
     }),
   },
 });
