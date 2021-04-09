@@ -4,9 +4,9 @@
     <div class="setLoader__sets">
       <div
         v-for="set in sets"
-        :key="`setLoader_set_${set.id}`"
+        :key="`setLoader_set_${set._id}`"
         class="setLoader__set"
-        @click="onLoadSet(set.id)"
+        @click="onLoadSet(set._id)"
       >
         <div class="setLoader__setContent">
           {{ set.name }}

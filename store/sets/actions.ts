@@ -40,8 +40,8 @@ export const createSet = async ({ dispatch, rootState }: Store, set: Set) => {
   });
 };
 
-export const loadSet = ({ commit }: Store, set: Set) => {
-  commit(loadSetType, set);
+export const loadSet = ({ commit }: Store, _id: string) => {
+  commit(loadSetType, _id);
 };
 
 export const addLayer = ({ commit, dispatch }: Store) => {
