@@ -12,6 +12,8 @@ import { mapState, mapActions } from "vuex";
 import { RootState } from "@/types/store";
 import { SocketClientInstance } from "@/types/socket";
 
+import "simplebar/dist/simplebar.js";
+
 interface DefaultLayout {
   addSocket: (socket: () => SocketClientInstance) => void;
   initSet: () => void;
