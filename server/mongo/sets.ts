@@ -1,4 +1,5 @@
 import { Set, OptionalSet } from "@/types/sets";
+import debug from "../debug";
 import { run } from "./_utils";
 
 const COLLECTION = "sets";
@@ -9,21 +10,28 @@ const initialSet: OptionalSet = {
   cells: [],
 };
 
-export const createSet = async (set: OptionalSet): Promise<Set | null> => {
+export const createSet = async (set: OptionalSet): Promise<string | null> => {
   try {
-    const response = await run((db) =>
-      db.collection(COLLECTION).insertOne({
-        ...initialSet,
-        ...set,
-      })
+    const response = await run(
+      (db) =>
+        new Promise((resolve, reject) =>
+          db.collection(COLLECTION).insertOne(
+            {
+              ...initialSet,
+              ...set,
+            },
+            (err, result) => (err ? reject(err) : resolve(result.insertedId))
+          )
+        )
     );
 
-    if (response && response._id) {
-      return <Set>response;
+    if (response) {
+      return <string>response;
     }
 
     return null;
   } catch (e) {
+    debug("db:sets", true)("ERROR", e);
     return null;
   }
 };
