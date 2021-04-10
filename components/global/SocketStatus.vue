@@ -35,7 +35,7 @@ export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({
   position: absolute;
   top: 0;
   right: 0;
-  padding: $gap;
+  padding: ($gap * 0.75) $gap;
   display: flex;
   align-items: center;
 }

@@ -19,6 +19,7 @@
 <style lang="scss">
 nav.navbar {
   display: flex;
+  padding: 0 $gap;
 
   a {
     display: flex;
