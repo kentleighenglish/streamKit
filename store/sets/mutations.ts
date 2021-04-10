@@ -20,7 +20,7 @@ import {
 } from "@/types/store";
 import { loadedSet } from "./getters";
 
-const updateCurrentSet = (state: SetsState, set: OptionalSet): SetsState => {
+const updateCurrentSet = (state: SetsState, set: OptionalSet): Set[] => {
   const index = state.sets.findIndex((s: Set) => s._id === state.currentSet);
 
   if (index !== -1) {
@@ -30,7 +30,7 @@ const updateCurrentSet = (state: SetsState, set: OptionalSet): SetsState => {
     };
   }
 
-  return state;
+  return state.sets;
 };
 
 export default {
@@ -58,13 +58,15 @@ export default {
   },
   [addLayerType](state: SetsState) {
     const set = loadedSet(state);
-    state = updateCurrentSet(state, { layers: set.layers + 1 });
+    const sets = updateCurrentSet(state, { layers: set.layers + 1 });
+
+    Vue.set(state, "sets", sets);
   },
   [deleteLayerType](state: SetsState, layer: number) {
     const deletedLayer = layer;
     const { layers, cells } = loadedSet(state);
 
-    state = updateCurrentSet(state, {
+    const sets = updateCurrentSet(state, {
       layers: layers > 1 ? layers - 1 : 1,
       cells: cells.reduce((arr: Cell[], cell: Cell) => {
         if (cell.layer === deletedLayer) {
@@ -78,18 +80,22 @@ export default {
         return [...arr, cell];
       }, []),
     });
+
+    Vue.set(state, "sets", sets);
   },
   [addSlideType](state: SetsState) {
     const set = loadedSet(state);
 
-    state = updateCurrentSet(state, {
+    const sets = updateCurrentSet(state, {
       slides: set.slides + 1,
     });
+
+    Vue.set(state, "sets", sets);
   },
   [deleteSlideType](state: SetsState, deletedSlide: number) {
     const { slides, cells } = loadedSet(state);
 
-    state = updateCurrentSet(state, {
+    const sets = updateCurrentSet(state, {
       slides: slides > 1 ? slides - 1 : 1,
       cells: cells.reduce((arr: Cell[], cell: Cell) => {
         if (cell.slide === deletedSlide) {
@@ -103,6 +109,8 @@ export default {
         return [...arr, cell];
       }, []),
     });
+
+    Vue.set(state, "sets", sets);
   },
   [setActiveCellType](
     state: SetsState,
@@ -141,7 +149,8 @@ export default {
         cells.push(newCell);
       }
 
-      state = updateCurrentSet(state, { cells });
+      const sets = updateCurrentSet(state, { cells });
+      Vue.set(state, "sets", sets);
     }
   },
   [saveSetType](state: SetsState) {
