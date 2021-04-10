@@ -55,18 +55,22 @@ export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({
 .socketStatus--connected {
   .socketStatus__indicator {
     background: $success;
+    box-shadow: 0px 0px 6px 2px fade-out($success, 0.6);
   }
   .socketStatus__label {
     color: $success;
+    text-shadow: 0px 0px 8px fade-out($success, 0.2);
   }
 }
 
 .socketStatus--disconnected {
   .socketStatus__indicator {
     background: $danger;
+    box-shadow: 0px 0px 4px 2px fade-out($danger, 0.8);
   }
   .socketStatus__label {
     color: $danger;
+    text-shadow: 0px 0px 8px fade-out($danger, 0.2);
   }
 }
 </style>
