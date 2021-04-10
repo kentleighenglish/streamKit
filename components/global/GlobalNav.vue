@@ -23,12 +23,15 @@ nav.navbar {
 
   a {
     display: flex;
-    color: white;
+    color: $grey;
     text-decoration: none;
     padding: ($gap / 2) $gap;
     border-bottom: 2px solid transparent;
     cursor: pointer;
     align-items: center;
+    font-size: 0.9em;
+    box-shadow: 0 8px 0px -6px transparent;
+    transition: box-shadow 0.1s, border-color 0.1s;
 
     .icon {
       font-size: 1em;
@@ -36,13 +39,13 @@ nav.navbar {
       color: $grey;
     }
 
-    &:hover {
+    &:hover:not(.nuxt-link-exact-active) {
       border-bottom-color: $primary;
+      box-shadow: 0 8px 8px -6px fade-out($primary, 0.6);
     }
 
-    &.active {
-      background: $primary;
-      color: white;
+    &.nuxt-link-exact-active {
+      color: $primary;
       cursor: default;
 
       .icon {
