@@ -200,7 +200,7 @@ $trackbar-layerHead-bg: lighten($trackbar-layer-bg, 3%);
 $slide-hover-bg: saturate(lighten($trackbar-layer-bg, 4%), 2%);
 
 $row-size: 60px;
-$column-size: 220px;
+$column-size: 200px;
 
 .trackbar {
   display: flex;
@@ -268,7 +268,7 @@ $column-size: 220px;
     min-width: $column-size;
     position: sticky;
     top: 0;
-    background: $trackbar-bg;
+    background: $trackbar-layerHead-bg;
   }
 
   &__layer {
