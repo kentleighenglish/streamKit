@@ -39,7 +39,7 @@ export const createSet = async (set: OptionalSet): Promise<string | null> => {
 export const updateSet = async (set: OptionalSet): Promise<Set | null> => {
   try {
     const response = await run((db) =>
-      db.collection(COLLECTION).updateOne({ _id: set._id }, set)
+      db.collection(COLLECTION).updateOne({ _id: set._id }, { $set: set })
     );
 
     if (response) {

@@ -199,7 +199,7 @@ $trackbar-layer-bg: saturate(lighten($trackbar-bg, 2%), 3%);
 $trackbar-layerHead-bg: lighten($trackbar-layer-bg, 3%);
 $slide-hover-bg: saturate(lighten($trackbar-layer-bg, 4%), 2%);
 
-$row-size: 80px;
+$row-size: 60px;
 $column-size: 220px;
 
 .trackbar {
@@ -210,6 +210,8 @@ $column-size: 220px;
   background: $trackbar-bg;
   height: 250px;
   overflow: auto;
+  padding: 0;
+  font-size: 0.8em;
 
   table {
     display: block;
@@ -235,7 +237,7 @@ $column-size: 220px;
     text-align: center;
     color: $grey-dark;
     font-weight: bold;
-    padding: ($gap / 2) 0;
+    padding: ($gap / 4) 0;
   }
 
   &__corner {
