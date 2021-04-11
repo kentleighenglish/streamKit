@@ -15,11 +15,11 @@
         <SkInput v-model="cell.source" label="Source" />
       </div>
       <div class="toolbar__panel">
-        <!-- <EditorControlPanel
+        <EditorControlPanel
           v-model="cell.endTransition"
           :options="transitionTypes"
-          label="Start Transition"
-        /> -->
+          label="End Transition"
+        />
       </div>
     </div>
   </div>
