@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar">
-    <div class="sk-flex sk-column" ng-if="vm.hasActiveCell">
+    <div v-if="hasActiveCell" class="sk-flex sk-column">
       <h2>Layer {{ activeLayer + 1 }} - Slide {{ activeSlide + 1 }}</h2>
 
       <div class="toolbar__panel">
