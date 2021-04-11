@@ -31,7 +31,7 @@ interface Parameter {
 }
 
 interface Model {
-  type: string | null;
+  type?: string;
   parameters: Parameter;
 }
 
@@ -57,11 +57,9 @@ export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
   },
   data: () => ({
     defaultModel: {
-      type: null,
       parameters: {},
     },
     model: {
-      type: null,
       parameters: {},
     },
   }),
@@ -76,7 +74,7 @@ export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
       );
     },
     controls() {
-      if (this.model && this.model.type !== null) {
+      if (this.model && this.model.type) {
         return this.options[this.model.type].controls || {};
       } else {
         return {};
