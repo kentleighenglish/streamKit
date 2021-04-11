@@ -74,10 +74,8 @@ export default Vue.extend({
 }
 
 .skButton__content {
-  ng-transclude {
-    display: flex;
-    align-items: center;
-  }
+  display: flex;
+  align-items: center;
 }
 
 .skButton__frame {
