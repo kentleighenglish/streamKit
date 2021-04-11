@@ -77,16 +77,11 @@ export default (Vue as VueConstructor<Vue & Toolbar>).extend({
     },
   },
   watch: {
-    activeLayer() {
-      this.cell = merge(
-        cloneDeep(this.defaultCell),
-        cloneDeep(this.activeCell || {})
-      );
-    },
-    activeSlide() {
-      this.cell = merge(
-        cloneDeep(this.defaultCell),
-        cloneDeep(this.activeCell || {})
+    activeCell() {
+      Vue.set(
+        this,
+        "cell",
+        merge(cloneDeep(this.defaultCell), cloneDeep(this.activeCell || {}))
       );
     },
     cell: {
