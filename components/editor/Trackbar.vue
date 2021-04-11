@@ -194,9 +194,9 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
-$trackbar-bg: desaturate(lighten($grey-darkest, 3%), 5%);
-$trackbar-layer-bg: saturate(lighten($trackbar-bg, 2%), 3%);
-$trackbar-layerHead-bg: lighten($trackbar-layer-bg, 3%);
+$trackbar-bg: darken($grey-darkest, 1%);
+$trackbar-layer-bg: fade-out(saturate(lighten($trackbar-bg, 5%), 3%), 0.6);
+$trackbar-layerHead-bg: lighten($trackbar-layer-bg, 5%);
 $slide-hover-bg: saturate(lighten($trackbar-layer-bg, 4%), 2%);
 
 $row-size: 60px;
@@ -207,11 +207,12 @@ $column-size: 200px;
   flex-direction: column;
   width: 100%;
   border-radius: $global-border-radius;
-  background: $trackbar-bg;
   height: 250px;
   overflow: auto;
   padding: 0;
   font-size: 0.8em;
+
+  @include texturedBg($trackbar-bg, "seigaiha");
 
   table {
     display: block;
