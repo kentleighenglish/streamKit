@@ -129,7 +129,7 @@ export default {
     const set = loadedSet(state);
 
     if (currentCell.layer !== null && currentCell.slide !== null) {
-      const cells = set.cells;
+      const cells = set.cells || [];
       const existingSlideIndex = findIndex(cells, {
         layer: currentCell.layer,
         slide: currentCell.slide,

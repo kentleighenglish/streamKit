@@ -4,14 +4,22 @@
       <h2>Layer {{ activeLayer + 1 }} - Slide {{ activeSlide + 1 }}</h2>
 
       <div class="toolbar__panel">
-        <!-- <control-panel ng-model="vm.cell.startTransition" options="vm.transitionTypes" label="Start Transition"></control-panel> -->
+        <EditorControlPanel
+          v-model="cell.startTransition"
+          :options="transitionTypes"
+          label="Start Transition"
+        />
       </div>
       <!-- Source Panel -->
       <div class="toolbar__panel">
-        <!-- <sk-input ng-model="vm.cell.source" label="Source"></sk-input> -->
+        <SkInput v-model="cell.source" label="Source" />
       </div>
       <div class="toolbar__panel">
-        <!-- <control-panel ng-model="vm.cell.endTransition" options="vm.transitionTypes" label="End Transition"></control-panel> -->
+        <!-- <EditorControlPanel
+          v-model="cell.endTransition"
+          :options="transitionTypes"
+          label="Start Transition"
+        /> -->
       </div>
     </div>
   </div>
@@ -22,8 +30,7 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import { find, cloneDeep, merge } from "lodash";
 import { Cell } from "@/types/sets";
 import { RootState } from "@/types/store";
-
-// const transitionTypes = require("engine/transitions");
+import transitionTypes from "@/engine/transitions";
 
 interface Toolbar {
   loadedSet: Set<RootState>;
@@ -37,7 +44,7 @@ export default (Vue as VueConstructor<Vue & Toolbar>).extend({
       source: null,
     },
     cell: {},
-    transitionTypes: {},
+    transitionTypes,
   }),
   computed: {
     ...mapGetters({

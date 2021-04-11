@@ -8,8 +8,8 @@
       :options="types"
       @input="updateValue($event.target.value, 'type')"
     />
-    <div ng-if="vm.model.type">
-      <div ng-repeat="(control, key) in controls">
+    <div v-if="model.type">
+      <div v-for="(control, key) in controls" :key="`controlPanel__${key}`">
         <SkInput
           v-model="model.parameters[key]"
           :type="control.type || 'text'"
@@ -65,19 +65,23 @@ export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
       type: null,
       parameters: {},
     },
+    model: {
+      type: null,
+      parameters: {},
+    },
   }),
   computed: {
     types() {
       return Object.keys(this.options).reduce(
-        (acc: ControlPanelType[], key) => [
+        (acc: { [key: string]: string }, key) => ({
           ...acc,
-          { key, label: this.options[key].label || key },
-        ],
-        []
+          [key]: this.options[key].label || key,
+        }),
+        {}
       );
     },
     controls() {
-      if (this.model && this.model.type) {
+      if (this.model && this.model.type !== null) {
         return this.options[this.model.type].controls || {};
       } else {
         return {};
