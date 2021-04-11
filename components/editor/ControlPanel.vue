@@ -115,8 +115,8 @@ export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
 
   h3 {
     display: block;
-    margin: 0.2em 0 0.8em;
-    font-size: 18px;
+    margin: 0em 0 0.8em;
+    font-size: 16px;
     color: $grey;
   }
 }
