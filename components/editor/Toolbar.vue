@@ -89,8 +89,11 @@ export default (Vue as VueConstructor<Vue & Toolbar>).extend({
         cloneDeep(this.activeCell || {})
       );
     },
-    cell() {
-      this.updateActiveCell(this.cell);
+    cell: {
+      handler() {
+        this.updateActiveCell(this.cell);
+      },
+      deep: true,
     },
   },
   methods: {
