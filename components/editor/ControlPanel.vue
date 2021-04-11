@@ -26,11 +26,6 @@
 import Vue, { VueConstructor } from "vue";
 import { cloneDeep, merge } from "lodash";
 
-interface ControlPanelType {
-  key: string;
-  label: string;
-}
-
 interface Parameter {
   [key: string]: any;
 }
@@ -122,7 +117,9 @@ export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
 
   h3 {
     display: block;
-    margin: 0.5em 0;
+    margin: 0.2em 0 0.8em;
+    font-size: 18px;
+    color: $grey;
   }
 }
 </style>
