@@ -82,12 +82,9 @@ export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
     },
   },
   watch: {
-    model() {
-      this.$emit("input", this.model);
+    value() {
+      Vue.set(this, "model", cloneDeep(merge(this.defaultModel, this.value)));
     },
-  },
-  mounted() {
-    Vue.set(this, "model", cloneDeep(merge(this.defaultModel, this.value)));
   },
   methods: {
     updateValue(value: any, key: string, parameter: boolean = false) {
