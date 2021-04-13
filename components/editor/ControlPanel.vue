@@ -6,7 +6,7 @@
       type="select"
       label="Type"
       :options="types"
-      @input="updateValue($event.target.value, 'type')"
+      @input="updateValue($event, 'type')"
     />
     <div v-if="model.type">
       <div v-for="(control, key) in controls" :key="`controlPanel__${key}`">
@@ -16,7 +16,7 @@
           :label="control.label"
           :min="control.min"
           :max="control.max"
-          @input="updateValue($event.target.value, key, true)"
+          @input="updateValue($event, key, true)"
         />
       </div>
     </div>
@@ -86,11 +86,8 @@ export default (Vue as VueConstructor<Vue & ControlPanel>).extend({
       this.$emit("input", this.model);
     },
   },
-  created() {
-    this.model = cloneDeep(merge(this.defaultModel, this.value));
-  },
   mounted() {
-    this.model = cloneDeep(merge(this.defaultModel, this.value));
+    Vue.set(this, "model", cloneDeep(merge(this.defaultModel, this.value)));
   },
   methods: {
     updateValue(value: any, key: string, parameter: boolean = false) {
