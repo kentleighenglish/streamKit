@@ -7,7 +7,6 @@ import {
   addSlideType,
   deleteSlideType,
   setActiveCellType,
-  resetActiveCellType,
   updateActiveCellType,
   saveSetType,
   saveSetCompleteType,
@@ -72,10 +71,6 @@ export const setActiveCell = (
   { layer, slide }: { layer: number; slide: number }
 ) => {
   commit(setActiveCellType, { layer, slide });
-};
-
-export const resetActiveCell = ({ commit }: Store) => {
-  commit(resetActiveCellType);
 };
 
 export const updateActiveCell = ({ commit, dispatch }: Store, cell: Cell) => {

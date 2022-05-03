@@ -82,6 +82,8 @@ export default {
     });
 
     Vue.set(state, "sets", sets);
+
+    this[resetActiveCellType](state, { deletedLayer });
   },
   [addSlideType](state: SetsState) {
     const set = loadedSet(state);
@@ -111,6 +113,8 @@ export default {
     });
 
     Vue.set(state, "sets", sets);
+
+    this[resetActiveCellType](state, { deletedSlide });
   },
   [setActiveCellType](
     state: SetsState,
@@ -121,8 +125,22 @@ export default {
 
     sessionStorage.setItem("currentCell", JSON.stringify(state.currentCell));
   },
-  [resetActiveCellType](state: SetsState) {
-    // @todo clear the active cell if the layer or slide it was in is deleted;
+  [resetActiveCellType](
+    state: SetsState,
+    {
+      deletedSlide,
+      deletedLayer,
+    }: { deletedSlide?: number; deletedLayer?: number }
+  ) {
+    const { currentCell } = state;
+
+    if (
+      currentCell.slide === deletedSlide ||
+      currentCell.layer === deletedLayer
+    ) {
+      Vue.set(state.currentCell, "slide", null);
+      Vue.set(state.currentCell, "layer", null);
+    }
   },
   [updateActiveCellType](state: SetsState, cell: Cell) {
     const { currentCell } = state;
