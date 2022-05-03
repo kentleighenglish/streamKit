@@ -22,8 +22,10 @@ interface DefaultLayout {
 export default (Vue as VueConstructor<Vue & DefaultLayout>).extend({
   computed: {
     ...mapState({
-      currentSetLoaded({ sets: { currentSet } }: RootState): boolean {
-        return !!currentSet;
+      currentSetLoaded({
+        sets: { currentSet, currentSetId },
+      }: RootState): boolean {
+        return !!currentSetId && !!currentSet;
       },
     }),
   },

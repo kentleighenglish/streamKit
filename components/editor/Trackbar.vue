@@ -92,9 +92,10 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapState } from "vuex";
 import { find } from "lodash";
 import { Cell } from "@/types/sets";
+import { RootState } from "@/types/store";
 
 interface Slide {
   key: string;
@@ -139,16 +140,18 @@ const processCells = (
 
 export default Vue.extend({
   computed: {
-    ...mapGetters({
-      loadedSet: "sets/loadedSet",
+    ...mapState({
+      currentSet({ sets: { currentSet } }: RootState): Set {
+        return currentSet;
+      },
     }),
     layers(): Layer[] {
-      const { cells = [], layers = 1, slides = 1 } = this.loadedSet;
+      const { cells = [], layers = 1, slides = 1 } = this.currentSet;
 
       return processCells(cells, layers, slides);
     },
     cells(): Cell[] {
-      const { cells = [] } = this.loadedSet;
+      const { cells = [] } = this.currentSet;
       return cells;
     },
   },

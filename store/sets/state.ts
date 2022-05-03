@@ -1,6 +1,7 @@
 import { SetsState } from "@/types/store";
 
 export default (): SetsState => ({
+  currentSetId: null,
   currentSet: null,
   currentCell: {
     layer: null,

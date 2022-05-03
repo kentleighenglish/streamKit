@@ -2,7 +2,8 @@ import { Device, SocketClientInstance } from "./socket";
 import { Set } from "./sets";
 
 export interface SetsState {
-  currentSet: string | null;
+  currentSetId: string | null;
+  currentSet: Set | null;
   currentCell: {
     layer: number | null;
     slide: number | null;
@@ -70,3 +71,4 @@ export const updateActiveCellType = "@sets/updateActiveCell";
 export const saveSetType = "@sets/save";
 export const saveSetCompleteType = "@sets/saveComplete";
 export const updateRecentlySavedType = "@sets/updateRecentlySaved";
+export const updateCurrentSetType = "@sets/updateCurrentSet";

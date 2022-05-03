@@ -26,17 +26,13 @@
 </template>
 <script lang="ts">
 import Vue, { VueConstructor } from "vue";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions } from "vuex";
 import { find, cloneDeep, merge } from "lodash";
 import { Cell } from "@/types/sets";
 import { RootState } from "@/types/store";
 import transitionTypes from "@/engine/transitions";
 
-interface Toolbar {
-  loadedSet: Set<RootState>;
-}
-
-export default (Vue as VueConstructor<Vue & Toolbar>).extend({
+export default (Vue as VueConstructor<Vue>).extend({
   data: () => ({
     defaultCell: {
       startTransition: null,
@@ -47,10 +43,10 @@ export default (Vue as VueConstructor<Vue & Toolbar>).extend({
     transitionTypes,
   }),
   computed: {
-    ...mapGetters({
-      loadedSet: "sets/loadedSet",
-    }),
     ...mapState({
+      currentSet({ sets: { currentSet } }: RootState): Set {
+        return currentSet;
+      },
       activeLayer({ sets: { currentCell } }: RootState): number | null {
         return currentCell.layer;
       },
@@ -62,7 +58,7 @@ export default (Vue as VueConstructor<Vue & Toolbar>).extend({
       },
     }),
     activeCell(): Cell | null {
-      const { cells = [] } = this.loadedSet;
+      const { cells = [] } = this.currentSet;
 
       if (this.activeLayer === null || this.activeSlide === null) {
         return null;

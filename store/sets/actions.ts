@@ -12,12 +12,12 @@ import {
   saveSetType,
   saveSetCompleteType,
   updateRecentlySavedType,
+  updateCurrentSetType,
   Store,
 } from "@/types/store";
 import { socketEvents } from "@/types/socket";
 import { Set, Cell } from "@/types/sets";
-
-import { loadedSet } from "./getters";
+import { getCurrentSet } from "./mutations";
 
 let saveTimeout: ReturnType<typeof setTimeout>;
 
@@ -42,6 +42,8 @@ export const createSet = async ({ dispatch, rootState }: Store, set: Set) => {
 
 export const loadSet = ({ commit }: Store, _id: string) => {
   commit(loadSetType, _id);
+
+  commit(updateCurrentSetType);
 };
 
 export const addLayer = ({ commit, dispatch }: Store) => {
@@ -83,6 +85,8 @@ export const updateActiveCell = ({ commit, dispatch }: Store, cell: Cell) => {
 };
 
 export const updateCurrentSet = ({ commit, state, rootState }: Store) => {
+  commit(updateCurrentSetType);
+
   // Prevent update from occurring immediately after changes
   clearTimeout(saveTimeout);
 
@@ -91,7 +95,7 @@ export const updateCurrentSet = ({ commit, state, rootState }: Store) => {
     if (!state._recentlySaved) {
       commit(updateRecentlySavedType, true);
       const { socket } = rootState.socket;
-      const set = loadedSet(state);
+      const set = getCurrentSet(state);
 
       commit(saveSetType);
       socket().emit(socketEvents.client.UPDATE_SET, set, () => {

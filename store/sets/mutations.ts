@@ -16,12 +16,12 @@ import {
   saveSetType,
   saveSetCompleteType,
   updateRecentlySavedType,
+  updateCurrentSetType,
   SetsState,
 } from "@/types/store";
-import { loadedSet } from "./getters";
 
 const updateCurrentSet = (state: SetsState, set: OptionalSet): Set[] => {
-  const index = state.sets.findIndex((s: Set) => s._id === state.currentSet);
+  const index = state.sets.findIndex((s: Set) => s._id === state.currentSetId);
 
   if (index !== -1) {
     state.sets[index] = {
@@ -33,38 +33,45 @@ const updateCurrentSet = (state: SetsState, set: OptionalSet): Set[] => {
   return state.sets;
 };
 
+export const getCurrentSet = ({
+  sets,
+  currentSetId,
+}: SetsState): OptionalSet => {
+  return sets.find((s: Set) => s._id === currentSetId) || {};
+};
+
 export default {
   [initSetType](state: SetsState) {
-    const currentSet = sessionStorage.getItem("currentSet");
+    const currentSetId = sessionStorage.getItem("currentSetId");
     const currentCell = sessionStorage.getItem("currentCell");
 
-    if (currentSet) {
-      Vue.set(state, "currentSet", currentSet);
+    if (currentSetId) {
+      Vue.set(state, "currentSetId", currentSetId);
     }
     if (currentCell) {
       Vue.set(state, "currentCell", JSON.parse(currentCell));
     }
   },
   [loadSetType](state: SetsState, setId: string) {
-    Vue.set(state, "currentSet", setId);
-    sessionStorage.setItem("currentSet", setId);
+    Vue.set(state, "currentSetId", setId);
+    sessionStorage.setItem("currentSetId", setId);
   },
   [unloadSetType](state: SetsState) {
-    Vue.set(state, "currentSet", null);
+    Vue.set(state, "currentSetId", null);
   },
   [updateSetsType](state: SetsState, sets: Set[]) {
     Vue.set(state, "sets", sets);
     Vue.set(state, "loaded", true);
   },
   [addLayerType](state: SetsState) {
-    const set = loadedSet(state);
+    const set = getCurrentSet(state);
     const sets = updateCurrentSet(state, { layers: set.layers + 1 });
 
     Vue.set(state, "sets", sets);
   },
   [deleteLayerType](state: SetsState, layer: number) {
     const deletedLayer = layer;
-    const { layers, cells } = loadedSet(state);
+    const { layers, cells } = getCurrentSet(state);
 
     const sets = updateCurrentSet(state, {
       layers: layers > 1 ? layers - 1 : 1,
@@ -84,7 +91,7 @@ export default {
     Vue.set(state, "sets", sets);
   },
   [addSlideType](state: SetsState) {
-    const set = loadedSet(state);
+    const set = getCurrentSet(state);
 
     const sets = updateCurrentSet(state, {
       slides: set.slides + 1,
@@ -93,7 +100,7 @@ export default {
     Vue.set(state, "sets", sets);
   },
   [deleteSlideType](state: SetsState, deletedSlide: number) {
-    const { slides, cells } = loadedSet(state);
+    const { slides, cells } = getCurrentSet(state);
 
     const sets = updateCurrentSet(state, {
       slides: slides > 1 ? slides - 1 : 1,
@@ -140,7 +147,7 @@ export default {
   },
   [updateActiveCellType](state: SetsState, cell: Cell) {
     const { currentCell } = state;
-    const set = loadedSet(state);
+    const set = getCurrentSet(state);
 
     if (currentCell.layer !== null && currentCell.slide !== null) {
       const cells = set.cells || [];
@@ -175,5 +182,8 @@ export default {
   },
   [updateRecentlySavedType](state: SetsState, recentlySaved: boolean) {
     Vue.set(state, "_recentlySaved", recentlySaved);
+  },
+  [updateCurrentSetType](state: SetsState) {
+    Vue.set(state, "currentSet", getCurrentSet(state));
   },
 };
