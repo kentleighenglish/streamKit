@@ -8,13 +8,13 @@
         <td class="trackbar__corner"></td>
         <td
           v-for="(slide, slideIndex) in layers[0].slides"
-          :key="`trackbarSlideLable__${slide.key}`"
+          :key="`trackbarSlideLabel__${slide.key}`"
           class="trackbar__slideHead"
         >
           <div class="sk-flex sk-center">
             <span class="trackbar__label">Slide {{ slideIndex + 1 }}</span>
             <span
-              v-if="layers.length > 1"
+              v-if="layers[0].slides.length > 1"
               class="trackbar__action icon"
               @click="onDeleteSlide(slideIndex)"
             >
