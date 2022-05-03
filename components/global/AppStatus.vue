@@ -46,6 +46,7 @@ export default (Vue as VueConstructor<Vue & ClassModsMixin>).extend({
   padding: ($gap * 0.75) $gap;
   display: flex;
   align-items: center;
+  pointer-events: none;
 }
 
 .appStatus__socket {

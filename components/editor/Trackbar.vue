@@ -53,7 +53,10 @@
           class="trackbar__slide"
         >
           <div
-            class="trackbar__cell"
+            :class="{
+              trackbar__cell: true,
+              'trackbar__cell--hasSource': !!(slide.cell && slide.cell.source),
+            }"
             @click="onCellClick($event, layerIndex, slideIndex)"
           ></div>
         </td>
@@ -90,7 +93,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapActions, mapGetters } from "vuex";
-import { find, filter } from "lodash";
+import { find } from "lodash";
 import { Cell } from "@/types/sets";
 
 interface Slide {
@@ -144,6 +147,10 @@ export default Vue.extend({
 
       return processCells(cells, layers, slides);
     },
+    cells(): Cell[] {
+      const { cells = [] } = this.loadedSet;
+      return cells;
+    },
   },
   methods: {
     ...mapActions({
@@ -154,7 +161,7 @@ export default Vue.extend({
       setActiveCell: "sets/setActiveCell",
     }),
     onDeleteLayer(index: number) {
-      const cells = filter(this.layers[index].slides, (c) => !!c.cell);
+      const cells = this.cells.filter((c) => c.layer === index);
 
       if (
         cells.length &&
@@ -171,7 +178,7 @@ export default Vue.extend({
       this.addLayer();
     },
     onDeleteSlide(index: number) {
-      const cells = filter(this.layers[index].slides, (c) => !!c.cell);
+      const cells = this.cells.filter((c) => c.slide === index);
 
       if (
         cells.length &&
@@ -198,6 +205,7 @@ $trackbar-bg: darken($grey-darkest, 1%);
 $trackbar-layer-bg: fade-out(saturate(lighten($trackbar-bg, 5%), 3%), 0.6);
 $trackbar-layerHead-bg: lighten($trackbar-layer-bg, 5%);
 $slide-hover-bg: saturate(lighten($trackbar-layer-bg, 4%), 2%);
+$slide-hasSource-bg: fade-out($trackbar-layer-bg, 0.2);
 
 $row-size: 60px;
 $column-size: 200px;
@@ -316,6 +324,10 @@ $column-size: 200px;
 
     &:hover {
       background: $slide-hover-bg;
+    }
+
+    &--hasSource {
+      background: $slide-hasSource-bg;
     }
   }
 }
