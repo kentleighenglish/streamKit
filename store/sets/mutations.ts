@@ -82,8 +82,6 @@ export default {
     });
 
     Vue.set(state, "sets", sets);
-
-    this[resetActiveCellType](state, { deletedLayer });
   },
   [addSlideType](state: SetsState) {
     const set = loadedSet(state);
@@ -113,8 +111,6 @@ export default {
     });
 
     Vue.set(state, "sets", sets);
-
-    this[resetActiveCellType](state, { deletedSlide });
   },
   [setActiveCellType](
     state: SetsState,

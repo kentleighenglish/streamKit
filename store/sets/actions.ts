@@ -8,6 +8,7 @@ import {
   deleteSlideType,
   setActiveCellType,
   updateActiveCellType,
+  resetActiveCellType,
   saveSetType,
   saveSetCompleteType,
   updateRecentlySavedType,
@@ -50,6 +51,7 @@ export const addLayer = ({ commit, dispatch }: Store) => {
 };
 export const deleteLayer = ({ commit, dispatch }: Store, index: number) => {
   commit(deleteLayerType, index);
+  commit(resetActiveCellType, { deletedLayer: index });
 
   dispatch("updateCurrentSet");
 };
@@ -62,6 +64,7 @@ export const addSlide = ({ commit, dispatch }: Store) => {
 
 export const deleteSlide = ({ commit, dispatch }: Store, index: number) => {
   commit(deleteSlideType, index);
+  commit(resetActiveCellType, { deletedSlide: index });
 
   dispatch("updateCurrentSet");
 };
