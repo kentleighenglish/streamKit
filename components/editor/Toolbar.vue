@@ -82,7 +82,7 @@ export default (Vue as VueConstructor<Vue>).extend({
     },
     cell: {
       handler() {
-        this.updateActiveCell(this.cell);
+        // this.updateActiveCell(this.cell);
       },
       deep: true,
     },

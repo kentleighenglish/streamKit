@@ -23,10 +23,14 @@ let saveTimeout: ReturnType<typeof setTimeout>;
 
 export const initSet = ({ commit }: Store) => {
   commit(initSetType);
+
+  commit(updateCurrentSetType);
 };
 
 export const updateSets = ({ commit }: Store, sets: Set[]) => {
   commit(updateSetsType, sets);
+
+  commit(updateCurrentSetType);
 };
 
 export const createSet = async ({ dispatch, rootState }: Store, set: Set) => {
